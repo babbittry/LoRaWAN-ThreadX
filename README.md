@@ -11,3 +11,5 @@
 - region：CN470
 - 基础工程的构建软件：STM32 CubeMX
 - 硬件地址：https://oshwhub.com/dfasdf/e77-400m22s
+- 串口：921600-8-N-1
+- LED 灯： PC13（低电平点亮）
