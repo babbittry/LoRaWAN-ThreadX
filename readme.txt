@@ -7,6 +7,15 @@ void RegionCN470InitDefaults( InitDefaultsParams_t* params )
             RegionNvmGroup2->ChannelsDefaultMask[4] = 0x0000;
             RegionNvmGroup2->ChannelsDefaultMask[5] = 0x0000;
 
+Thd_LmHandlerProcess_Entry
+
+      APP_LOG(TS_ON, VLEVEL_H, "Thd_LmHandlerProcess_RescheduleFlag: %d \r\n", Thd_LmHandlerProcess_RescheduleFlag);
+    }
+    else
+    {
+      tx_thread_suspend(&Thd_LmHandlerProcessId);
+      APP_LOG(TS_ON, VLEVEL_H, "Thd_LmHandlerProcess resumed from suspend \r\n");
+
 1. TX ctrl \ RX ctrl 引脚的配置
 2. RS232\485的功能
 3. downlink 功能
