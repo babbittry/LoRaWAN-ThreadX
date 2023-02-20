@@ -206,6 +206,7 @@ VOID tx_application_define(VOID *first_unused_memory)
       /* USER CODE END  MX_LoRaWAN_Init_Error */
     }
     /* USER CODE BEGIN  MX_LoRaWAN_Init_Success */
+
     /* USER CODE END  MX_LoRaWAN_Init_Success */
   }
 }
@@ -373,8 +374,8 @@ static void AppTaskPrint(ULONG thread_input)
             APP_LOG(TS_OFF, VLEVEL_M, "   %2d        %5d      %5d       %5d      %s\r\n",
                       p_tcb->tx_thread_priority,
                       p_tcb->tx_thread_stack_size,
-                      (int)p_tcb->tx_thread_stack_end - (int)p_tcb->tx_thread_stack_ptr,
-                      (int)p_tcb->tx_thread_stack_end - (int)p_tcb->tx_thread_stack_highest_ptr,
+                      ((int)p_tcb->tx_thread_stack_end - (int)p_tcb->tx_thread_stack_ptr),
+                      ((int)p_tcb->tx_thread_stack_end - (int)p_tcb->tx_thread_stack_highest_ptr),
                       p_tcb->tx_thread_name);
 
             p_tcb = p_tcb->tx_thread_created_next;
@@ -382,6 +383,8 @@ static void AppTaskPrint(ULONG thread_input)
             if (p_tcb == &AppTaskPrintTCB)
                 break;
         }
+        App_Printf("===============================================================\r\n");
+
         tx_thread_sleep(10000); /* 10s¥Ú”°“ª¥Œ */
     }
 }

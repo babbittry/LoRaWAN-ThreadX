@@ -118,7 +118,7 @@
    define is negated, thereby forcing the stack fill which is necessary for the stack checking
    logic.  */
 
-/*#define TX_ENABLE_STACK_CHECKING*/
+#define TX_ENABLE_STACK_CHECKING
 
 /* Determine if preemption-threshold should be disabled. By default, preemption-threshold is
    enabled. If the application does not use preemption-threshold, it may be disabled to reduce
