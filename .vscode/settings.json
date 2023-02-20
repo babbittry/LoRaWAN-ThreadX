@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "loramaccommands.h": "c",
+        "stm32_adv_trace.h": "c",
+        "tx_api.h": "c",
+        "tx_timer.h": "c",
+        "tx_port.h": "c",
+        "sys_conf.h": "c"
+    }
+}
