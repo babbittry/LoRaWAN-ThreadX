@@ -52,19 +52,19 @@ void MX_USART1_UART_Init(void)
   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_UART_Init(&huart1) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN USART1_Init 2 */
 
@@ -89,7 +89,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-      Error_Handler();
+      Error_Handler(__FILE__, __LINE__);
     }
 
     /* USART1 clock enable */
@@ -124,7 +124,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_usart1_tx.Init.Priority = DMA_PRIORITY_LOW;
     if (HAL_DMA_Init(&hdma_usart1_tx) != HAL_OK)
     {
-      Error_Handler();
+      Error_Handler(__FILE__, __LINE__);
     }
 
     __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart1_tx);

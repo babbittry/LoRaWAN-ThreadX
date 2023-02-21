@@ -25,7 +25,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "sys_app.h"
+#include  <stdarg.h>
+#include  <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -139,7 +141,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /** Configure the SYSCLKSource, HCLK, PCLK1 and PCLK2 clocks dividers
@@ -155,7 +157,7 @@ void SystemClock_Config(void)
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 }
 
@@ -167,9 +169,13 @@ void SystemClock_Config(void)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
+void Error_Handler(char *file, uint32_t line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+    APP_LOG(TS_OFF, VLEVEL_L, "\r\n==================\r\n");
+    APP_LOG(TS_OFF, VLEVEL_L, "FILE: %s , LINE: %d\r\n", file, line);
+    APP_LOG(TS_OFF, VLEVEL_L, "!!! HARD FAULT !!!\r\n");
+    APP_LOG(TS_OFF, VLEVEL_L, "==================\r\n");
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)

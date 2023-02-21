@@ -40,7 +40,7 @@ void MX_SUBGHZ_Init(void)
   hsubghz.Init.BaudratePrescaler = SUBGHZSPI_BAUDRATEPRESCALER_4;
   if (HAL_SUBGHZ_Init(&hsubghz) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN SUBGHZ_Init 2 */
 

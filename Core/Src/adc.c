@@ -61,7 +61,7 @@ void MX_ADC_Init(void)
   hadc.Init.TriggerFrequencyMode = ADC_TRIGGER_FREQ_HIGH;
   if (HAL_ADC_Init(&hadc) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN ADC_Init 2 */
 

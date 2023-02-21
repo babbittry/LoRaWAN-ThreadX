@@ -203,13 +203,13 @@ void vcom_Resume(void)
   /*to re-enable lost UART settings*/
   if (HAL_UART_Init(&huart1) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /*to re-enable lost DMA settings*/
   if (HAL_DMA_Init(&hdma_usart1_tx) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN vcom_Resume_2 */
 

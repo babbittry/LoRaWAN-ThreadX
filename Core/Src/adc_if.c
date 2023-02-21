@@ -191,7 +191,7 @@ static uint32_t ADC_ReadChannels(uint32_t channel)
   /* Start Calibration */
   if (HAL_ADCEx_Calibration_Start(&hadc) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /* Configure Regular Channel */
@@ -200,13 +200,13 @@ static uint32_t ADC_ReadChannels(uint32_t channel)
   sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_1;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   if (HAL_ADC_Start(&hadc) != HAL_OK)
   {
     /* Start Error */
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /** Wait for end of conversion */
   HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY);

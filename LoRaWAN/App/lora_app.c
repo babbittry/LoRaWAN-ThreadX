@@ -415,14 +415,14 @@ void LoRaWAN_Init(void)
   /* Allocate the stack and create thread for LmHandlerProcess.  */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer, CFG_LM_HANDLER_THREAD_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (tx_thread_create(&Thd_LmHandlerProcessId, "Thread LmHandlerProcess", Thd_LmHandlerProcess_Entry, 0,
                        pointer, CFG_LM_HANDLER_THREAD_STACK_SIZE,
                        CFG_LM_HANDLER_THREAD_PRIO, CFG_LM_HANDLER_THREAD_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /* No need to allocate the stack and create thread for Thd_LoraSendProcess. */
@@ -430,26 +430,26 @@ void LoRaWAN_Init(void)
 
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer, CFG_APP_LORA_STORE_CONTEXT_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (tx_thread_create(&Thd_LoraStoreContextId, "Thread StoreContext", Thd_StoreContext_Entry, 0,
                        pointer, CFG_APP_LORA_STORE_CONTEXT_STACK_SIZE,
                        CFG_APP_LORA_STORE_CONTEXT_PRIO, CFG_APP_LORA_STORE_CONTEXT_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer, CFG_APP_LORA_STOP_JOIN_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   if (tx_thread_create(&Thd_LoraStopJoinId, "Thread StopJoin", Thd_StopJoin_Entry, 0,
                        pointer, CFG_APP_LORA_STOP_JOIN_STACK_SIZE,
                        CFG_APP_LORA_STOP_JOIN_PRIO, CFG_APP_LORA_STOP_JOIN_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /* Init Info table used by LmHandler*/

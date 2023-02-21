@@ -5,6 +5,9 @@
         "tx_api.h": "c",
         "tx_timer.h": "c",
         "tx_port.h": "c",
-        "sys_conf.h": "c"
+        "sys_conf.h": "c",
+        "sys_app.h": "c",
+        "stdbool.h": "c",
+        "stdarg.h": "c"
     }
 }

@@ -50,7 +50,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+void Error_Handler(char *file, uint32_t line);
 
 /* USER CODE BEGIN EFP */
 

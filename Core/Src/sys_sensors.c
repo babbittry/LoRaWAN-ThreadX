@@ -168,28 +168,28 @@ int32_t EnvSensors_Init(void)
   ret = IKS01A2_ENV_SENSOR_Init(HTS221_0, ENV_TEMPERATURE | ENV_HUMIDITY);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A2_ENV_SENSOR_LPS22HB_0 == 1)
   ret = IKS01A2_ENV_SENSOR_Init(LPS22HB_0, ENV_TEMPERATURE | ENV_PRESSURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_LPS22HB_0 */
 #if (USE_IKS01A3_ENV_SENSOR_HTS221_0 == 1)
   ret = IKS01A3_ENV_SENSOR_Init(IKS01A3_HTS221_0, ENV_TEMPERATURE | ENV_HUMIDITY);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A3_ENV_SENSOR_LPS22HH_0 == 1)
   ret = IKS01A3_ENV_SENSOR_Init(IKS01A3_LPS22HH_0, ENV_TEMPERATURE | ENV_PRESSURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_LPS22HH_0 */
 
@@ -198,48 +198,48 @@ int32_t EnvSensors_Init(void)
   ret = IKS01A2_ENV_SENSOR_Enable(HTS221_0, ENV_HUMIDITY);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   ret = IKS01A2_ENV_SENSOR_Enable(HTS221_0, ENV_TEMPERATURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A2_ENV_SENSOR_LPS22HB_0 == 1)
   ret = IKS01A2_ENV_SENSOR_Enable(LPS22HB_0, ENV_PRESSURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   ret = IKS01A2_ENV_SENSOR_Enable(LPS22HB_0, ENV_TEMPERATURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_LPS22HB_0 */
 #if (USE_IKS01A3_ENV_SENSOR_HTS221_0 == 1)
   ret = IKS01A3_ENV_SENSOR_Enable(IKS01A3_HTS221_0, ENV_HUMIDITY);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   ret = IKS01A3_ENV_SENSOR_Enable(IKS01A3_HTS221_0, ENV_TEMPERATURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A3_ENV_SENSOR_LPS22HH_0 == 1)
   ret = IKS01A3_ENV_SENSOR_Enable(IKS01A3_LPS22HH_0, ENV_PRESSURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   ret = IKS01A3_ENV_SENSOR_Enable(IKS01A3_LPS22HH_0, ENV_TEMPERATURE);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_LPS22HH_0 */
 
@@ -248,28 +248,28 @@ int32_t EnvSensors_Init(void)
   ret = IKS01A2_ENV_SENSOR_GetCapabilities(HTS221_0, &EnvCapabilities);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A2_ENV_SENSOR_LPS22HB_0 == 1)
   ret = IKS01A2_ENV_SENSOR_GetCapabilities(LPS22HB_0, &EnvCapabilities);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A2_ENV_SENSOR_LPS22HB_0 */
 #if (USE_IKS01A3_ENV_SENSOR_HTS221_0 == 1)
   ret = IKS01A3_ENV_SENSOR_GetCapabilities(IKS01A3_HTS221_0, &EnvCapabilities);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_HTS221_0 */
 #if (USE_IKS01A3_ENV_SENSOR_LPS22HH_0 == 1)
   ret = IKS01A3_ENV_SENSOR_GetCapabilities(IKS01A3_LPS22HH_0, &EnvCapabilities);
   if (ret != BSP_ERROR_NONE)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 #endif /* USE_IKS01A3_ENV_SENSOR_LPS22HH_0 */
 

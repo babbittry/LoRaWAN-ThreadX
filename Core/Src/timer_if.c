@@ -235,7 +235,7 @@ UTIL_TIMER_Status_t TIMER_IF_StartTimer(uint32_t timeout)
   sAlarm.Alarm = RTC_ALARM_A;
   if (HAL_RTC_SetAlarm_IT(&hrtc, &sAlarm, RTC_FORMAT_BCD) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN TIMER_IF_StartTimer_Last */
 

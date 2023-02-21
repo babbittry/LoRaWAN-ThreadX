@@ -52,7 +52,7 @@ void MX_RTC_Init(void)
   hrtc.Init.BinMode = RTC_BINARY_ONLY;
   if (HAL_RTC_Init(&hrtc) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /* USER CODE BEGIN Check_RTC_BKUP */
@@ -63,7 +63,7 @@ void MX_RTC_Init(void)
   */
   if (HAL_RTCEx_SetSSRU_IT(&hrtc) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
 
   /** Enable the Alarm A
@@ -75,7 +75,7 @@ void MX_RTC_Init(void)
   sAlarm.Alarm = RTC_ALARM_A;
   if (HAL_RTC_SetAlarm_IT(&hrtc, &sAlarm, 0) != HAL_OK)
   {
-    Error_Handler();
+    Error_Handler(__FILE__, __LINE__);
   }
   /* USER CODE BEGIN RTC_Init 2 */
 
@@ -100,7 +100,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
 
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-      Error_Handler();
+      Error_Handler(__FILE__, __LINE__);
     }
 
     /* RTC clock enable */
