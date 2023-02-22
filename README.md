@@ -51,6 +51,37 @@
 ```C
 #define LED_PERIOD_TIME 20
 ```
+
+### TODO:
+
+- 利用 Trace 功能，测试不同优化等级下，以及是否开启 Link-Time Optimization、One ELF Section per Function 对程序执行时间、Firm 大小的影响
+
+  - **Optimize for Time：优化时间，即优化代码中费时的地方** 【设置编译器命令行：-Otime】 比如有些算法，本身代码量就比较大，运行需要很长时间（假如需要2秒），这个时候勾选上该功能，会发现运行时间有比较明显的减少（或许不到1秒时间）。
+  - **One ELF Section per Function：优化每一个函数 ELF 段** 【设置编译器命令行：--split_sections】 每个函数都会产生一个 ELF 段，勾选上，允许优化每一个 ELF 段，通过这个选项， 可以在最后生成的二进制文件中将冗余的函数排除掉。
+
+- 查看射频部分的 TX ctrl \ RX ctrl 引脚的配置
+
+- 为什么最大栈使用（MaxStack）比当前使用栈（CurStack）还要大？例如下面的 Thread StoreContext、Thread StopJoin、App Task IDLE
+
+  ```
+  ===============================================================
+  OS CPU Usage = 90.00%
+  ===============================================================
+    任务优先级  任务栈大小    当前使用栈   最大栈使用    任务名
+     Prio     StackSize   CurStack    MaxStack   Taskname
+     17         1020        127         127      App Task print
+     10         1532        227        1087      App LoRaWAN Main Thread
+     10         1532        115        1079      Thread LmHandlerProcess
+     10         1020        147          95      Thread StoreContext
+     10         1020        115          75      Thread StopJoin
+      0         1020        155         155      System Timer Thread
+     30          508        103         103      App Task STAT
+     31          252         79          71      App Task IDLE
+  ===============================================================
+  ```
+
+  
+
 ### 目前使用的资源：
 
 #### 协议栈：
