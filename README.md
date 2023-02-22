@@ -44,6 +44,13 @@
       APP_LOG(TS_ON, VLEVEL_H, "Thd_LmHandlerProcess resumed from suspend \r\n");
 ```
 
+#### 3. 宏定义 `LED_PERIOD_TIME`
+
+500ms 的时间有点久，改为20ms
+
+```C
+#define LED_PERIOD_TIME 20
+```
 ### 目前使用的资源：
 
 #### 协议栈：

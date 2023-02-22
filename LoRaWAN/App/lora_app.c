@@ -75,7 +75,7 @@ typedef enum TxEventType_e
 /**
   * LEDs period value of the timer in ms
   */
-#define LED_PERIOD_TIME 500
+#define LED_PERIOD_TIME 20
 
 /**
   * Join switch period value of the timer in ms
