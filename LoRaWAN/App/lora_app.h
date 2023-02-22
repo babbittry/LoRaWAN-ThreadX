@@ -132,7 +132,7 @@ extern "C" {
  * THREADs configuration defines: stack size and priorities
  * of the different Azure RTOS threads used by the LoRaWAN application.
  */
-#define CFG_APP_LORA_THREAD_STACK_SIZE                   1024
+#define CFG_APP_LORA_THREAD_STACK_SIZE                   1536
 #define CFG_APP_LORA_THREAD_PRIO                         10
 #define CFG_APP_LORA_THREAD_PREEMPTION_THRESHOLD         CFG_APP_LORA_THREAD_PRIO
 

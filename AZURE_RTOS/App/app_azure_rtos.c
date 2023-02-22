@@ -44,7 +44,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // 空闲任务
-#define APP_CFG_TASK_IDLE_STK_SIZE      1024u
+#define APP_CFG_TASK_IDLE_STK_SIZE      256u
 static TX_THREAD    AppTaskIdleTCB;
 static uint64_t     AppTaskIdleStk[APP_CFG_TASK_IDLE_STK_SIZE / 8];
 #define APP_CFG_TASK_IDLE_PRIO          31u
@@ -58,7 +58,7 @@ static uint64_t     AppTaskPrintStk[APP_CFG_TASK_PRINT_STK_SIZE / 8];
 static void AppTaskPrint(ULONG thread_input);
 
 // 统计任务
-#define  APP_CFG_TASK_STAT_STK_SIZE     1024u
+#define  APP_CFG_TASK_STAT_STK_SIZE     512u
 static  TX_THREAD   AppTaskStatTCB;
 static  uint64_t    AppTaskStatStk[APP_CFG_TASK_STAT_STK_SIZE/8];
 #define  APP_CFG_TASK_STAT_PRIO         30u
