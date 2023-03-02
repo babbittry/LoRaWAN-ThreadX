@@ -52,6 +52,16 @@
 #define LED_PERIOD_TIME 20
 ```
 
+#### 4. 错误处理函数 `Error_Handler(__FILE__, __LINE__)`
+
+在错误处理函数中打印出错的文件名和行。搜索替换：
+
+源：`Error_Handler();`
+
+替换为：`Error_Handler(__FILE__, __LINE__);`
+
+`main.c` 和 `main.h` 中的 `void Error_Handler(void)` 替换为`void Error_Handler(char *file, uint32_t line)`
+
 ### TODO:
 
 - 利用 Trace 功能，测试不同优化等级下，以及是否开启 Link-Time Optimization、One ELF Section per Function 对程序执行时间、Firm 大小的影响
