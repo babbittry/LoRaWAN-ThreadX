@@ -30,6 +30,9 @@
 #include "tx_thread.h"
 #include "tx_timer.h"
 
+#if defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY) || defined(TX_EXECUTION_PROFILE_ENABLE)
+extern VOID _tx_execution_initialize(VOID);
+#endif
 
 /* Define any port-specific scheduling data structures.  */
 
@@ -137,6 +140,11 @@ VOID  _tx_initialize_kernel_enter(VOID)
 
     /* Call any port specific pre-scheduler processing.  */
     TX_PORT_SPECIFIC_PRE_SCHEDULER_INITIALIZATION
+
+#if defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY) || defined(TX_EXECUTION_PROFILE_ENABLE)
+    /* Initialize Execution Profile Kit.  */
+    _tx_execution_initialize();
+#endif
 
     /* Enter the scheduling loop to start executing threads!  */
     _tx_thread_schedule();

@@ -8,6 +8,8 @@
         "sys_conf.h": "c",
         "sys_app.h": "c",
         "stdbool.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "app_azure_rtos.h": "c",
+        "tx_initialize.h": "c"
     }
 }

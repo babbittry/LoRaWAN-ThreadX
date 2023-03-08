@@ -34,6 +34,7 @@
 #include  <stdarg.h>
 #include  <stdio.h>
 #include  <stdlib.h>
+#include "tx_execution_profile.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,11 +75,20 @@ static  void  App_Printf (const char *fmt, ...);
 */
 static  TX_MUTEX   AppPrintfSemp;	/* 用于printf互斥 */
 /* 统计任务使用 */
-__IO uint8_t   OSStatRdy;        /* 统计任务就绪标志 */
-__IO uint32_t  OSIdleCtr;        /* 空闲任务计数 */
-__IO float     OSCPUUsage;       /* CPU百分比 */
-uint32_t       OSIdleCtrMax;     /* 1秒内最大的空闲计数 */
-uint32_t       OSIdleCtrRun;     /* 1秒内空闲任务当前计数 */
+
+/* 宏定义 */
+#define  DWT_CYCCNT  *(volatile unsigned int *)0xE0001004
+#define  DWT_CR      *(volatile unsigned int *)0xE0001000
+#define  DEM_CR      *(volatile unsigned int *)0xE000EDFC
+#define  DBGMCU_CR   *(volatile unsigned int *)0xE0042004
+#define  DEM_CR_TRCENA               (1 << 24)
+#define  DWT_CR_CYCCNTENA            (1 <<  0)
+
+__IO double     OSCPUUsage;       /* CPU百分比 */
+extern EXECUTION_TIME     _tx_execution_thread_time_total;
+extern EXECUTION_TIME     _tx_execution_isr_time_total;
+extern EXECUTION_TIME     _tx_execution_idle_time_total;
+void bsp_InitDWT(void);
 
 /* USER CODE END PD */
 
@@ -148,37 +158,37 @@ VOID tx_application_define(VOID *first_unused_memory)
     /* USER CODE BEGIN  App_ThreadX_Init_Success */
 
     /**************创建统计任务*********************/
-    tx_thread_create(&AppTaskStatTCB,                   /* 任务控制块地址 */  
+    tx_thread_create(&AppTaskStatTCB,                   /* 任务控制块地址 */
                        "App Task STAT",                 /* 任务名 */
                        AppTaskStat,                     /* 启动任务函数地址 */
                        0,                               /* 传递给任务的参数 */
                        &AppTaskStatStk[0],              /* 堆栈基地址 */
-                       APP_CFG_TASK_STAT_STK_SIZE,      /* 堆栈空间大小 */  
+                       APP_CFG_TASK_STAT_STK_SIZE,      /* 堆栈空间大小 */
                        APP_CFG_TASK_STAT_PRIO,          /* 任务优先级*/
                        APP_CFG_TASK_STAT_PRIO,          /* 任务抢占阀值 */
                        TX_NO_TIME_SLICE,                /* 不开启时间片 */
                        TX_AUTO_START);                  /* 创建后立即启动 */
-                       
-                   
+
+
     /**************创建空闲任务*********************/
-    tx_thread_create(&AppTaskIdleTCB,                   /* 任务控制块地址 */  
+    tx_thread_create(&AppTaskIdleTCB,                   /* 任务控制块地址 */
                        "App Task IDLE",                 /* 任务名 */
                        AppTaskIDLE,                     /* 启动任务函数地址 */
                        0,                               /* 传递给任务的参数 */
                        &AppTaskIdleStk[0],              /* 堆栈基地址 */
-                       APP_CFG_TASK_IDLE_STK_SIZE,      /* 堆栈空间大小 */  
+                       APP_CFG_TASK_IDLE_STK_SIZE,      /* 堆栈空间大小 */
                        APP_CFG_TASK_IDLE_PRIO,          /* 任务优先级*/
                        APP_CFG_TASK_IDLE_PRIO,          /* 任务抢占阀值 */
                        TX_NO_TIME_SLICE,                /* 不开启时间片 */
                        TX_AUTO_START);                  /* 创建后立即启动 */
 
     /**************创建 print 任务*********************/
-    tx_thread_create(&AppTaskPrintTCB,                  /* 任务控制块地址 */  
+    tx_thread_create(&AppTaskPrintTCB,                  /* 任务控制块地址 */
                        "App Task print",                /* 任务名 */
                        AppTaskPrint,                    /* 启动任务函数地址 */
                        0,                               /* 传递给任务的参数 */
                        &AppTaskPrintStk[0],             /* 堆栈基地址 */
-                       APP_CFG_TASK_PRINT_STK_SIZE,     /* 堆栈空间大小 */  
+                       APP_CFG_TASK_PRINT_STK_SIZE,     /* 堆栈空间大小 */
                        APP_CFG_TASK_PRINT_PRIO,         /* 任务优先级*/
                        APP_CFG_TASK_PRINT_PRIO,         /* 任务抢占阀值 */
                        TX_NO_TIME_SLICE,                /* 不开启时间片 */
@@ -216,34 +226,6 @@ VOID tx_application_define(VOID *first_unused_memory)
 
 /*
 *********************************************************************************************************
-*	函 数 名: AppTaskStatistic
-*	功能说明: 统计任务，用于实现CPU利用率的统计。为了测试更加准确，可以开启注释调用的全局中断开关
-*	形    参: thread_input 创建该任务时传递的形参 
-*	返 回 值: 无
-*   优 先 级: 30
-*********************************************************************************************************
-*/
-void  OSStatInit (void)
-{
-    OSStatRdy = FALSE;
-    
-    tx_thread_sleep(2u);        /* 时钟同步 */
-    
-    //__disable_irq();
-    OSIdleCtr    = 0uL;         /* 清空闲计数 */
-    //__enable_irq();
-    
-    tx_thread_sleep(1000);       /* 统计1s内，最大空闲计数 */
-    
-       //__disable_irq();
-    OSIdleCtrMax = OSIdleCtr;   /* 保存最大空闲计数 */
-    OSStatRdy    = TRUE;
-    //__enable_irq();
-}
-
-
-/*
-*********************************************************************************************************
 *	函 数 名: AppTaskIDLE
 *	功能说明: 空闲任务
 *	形    参: thread_input 创建该任务时传递的形参
@@ -252,16 +234,16 @@ void  OSStatInit (void)
 *********************************************************************************************************
 */
 static void AppTaskIDLE(ULONG thread_input)
-{	
+{
   TX_INTERRUPT_SAVE_AREA
 
   (void)thread_input;
-    
+
   while(1)
   {
        TX_DISABLE
-       OSIdleCtr++;
        TX_RESTORE
+       tx_thread_sleep(2000);
   }
 }
 
@@ -269,31 +251,38 @@ static void AppTaskIDLE(ULONG thread_input)
 static void AppTaskStat(ULONG thread_input)
 {
     (void)thread_input;
-    /* 优先执行任务统计 */
-    OSStatInit();
-    while (OSStatRdy == FALSE) 
-    {
-        tx_thread_sleep(200);     /* 等待统计任务就绪 */
-    }
+    /*
+     * TolTime: 总的时间
+     * IdleTime： 总的空闲时间
+     * deltaTolTime：200ms 内的总时间
+     * deltaIdleTime： 200ms 内的空闲时间
+     */
+    EXECUTION_TIME TolTime, IdleTime, deltaTolTime, deltaIdleTime;
+    uint32_t uiCount = 0;
+    /* 优先开启 DWT */
+    bsp_InitDWT();
 
-    OSIdleCtrMax /= 10uL;
-    if (OSIdleCtrMax == 0uL) 
+    /* 计算CPU利用率 */
+    IdleTime = _tx_execution_idle_time_total;
+    TolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total;
+
+    for (;;)
     {
-        OSCPUUsage = 0u;
-    }
-    
-    //__disable_irq();
-    OSIdleCtr = OSIdleCtrMax * 100uL;  /* 设置初始CPU利用率 0% */
-    //__enable_irq();
-    
-    for (;;) 
-    {
-       // __disable_irq();
-        OSIdleCtrRun = OSIdleCtr;    /* 获得1s内空闲计数 */
-        OSIdleCtr    = 0uL;          /* 复位空闲计数 */
-       //	__enable_irq();            /* 计算1s内的CPU利用率 */
-        OSCPUUsage   = (100uL - (float)OSIdleCtrRun / OSIdleCtrMax);
-        tx_thread_sleep(1000);        /* 每1s统计一次 */
+        uiCount = 0;
+        deltaIdleTime = _tx_execution_idle_time_total - IdleTime;
+        deltaTolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total - TolTime;
+        if(deltaTolTime != 0)
+        {
+            OSCPUUsage = (double)deltaIdleTime / deltaTolTime;
+            OSCPUUsage = 100- OSCPUUsage * 100;
+        }else
+        {
+            OSCPUUsage = 100;
+        }
+
+        IdleTime = _tx_execution_idle_time_total;
+        TolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total;
+        tx_thread_sleep(2000);        /* 每 2s 统计一次 */
     }
 }
 
@@ -314,7 +303,7 @@ static  void  AppObjCreate (void)
 /*
 *********************************************************************************************************
 *	函 数 名: App_Printf
-*	功能说明: 线程安全的printf方式		  			  
+*	功能说明: 线程安全的printf方式
 *	形    参: 同printf的参数。
 *             在C中，当无法列出传递函数的所有实参的类型和数目时,可以用省略号指定参数表
 *	返 回 值: 无
@@ -362,7 +351,14 @@ static void AppTaskPrint(ULONG thread_input)
 
         /* 打印标题 */
         App_Printf("===============================================================\r\n");
-        App_Printf("OS CPU Usage = %5.2f%%\r\n", OSCPUUsage);
+        App_Printf("CPU利用率 = %5.2f%%\r\n", OSCPUUsage);
+        App_Printf("任务执行时间 = %.9fs\r\n", (double)_tx_execution_thread_time_total/SystemCoreClock);
+        App_Printf("空闲执行时间 = %.9fs\r\n", (double)_tx_execution_idle_time_total/SystemCoreClock);
+        App_Printf("中断执行时间 = %.9fs\r\n", (double)_tx_execution_isr_time_total/SystemCoreClock);
+        App_Printf("系统总执行时间 = %.9fs\r\n", (double)(_tx_execution_thread_time_total + \
+                                                       _tx_execution_idle_time_total +  \
+                                                       _tx_execution_isr_time_total)/SystemCoreClock);
+
         App_Printf("===============================================================\r\n");
         App_Printf(" 任务优先级 任务栈大小 当前使用栈  最大栈使用   任务名\r\n");
         App_Printf("   Prio     StackSize   CurStack    MaxStack   Taskname\r\n");
@@ -387,5 +383,20 @@ static void AppTaskPrint(ULONG thread_input)
 
         tx_thread_sleep(10000); /* 10s打印一次 */
     }
+}
+
+/*
+*********************************************************************************************************
+*   函 数 名: bsp_InitDWT
+*   功能说明: 初始化DWT. 该函数被 bsp_Init() 调用。
+*   形    参: 无
+*   返 回 值: 无
+*********************************************************************************************************
+*/
+void bsp_InitDWT(void)
+{
+    DEM_CR         |= (unsigned int)DEM_CR_TRCENA;
+    DWT_CYCCNT      = (unsigned int)0u;
+    DWT_CR         |= (unsigned int)DWT_CR_CYCCNTENA;
 }
 /* USER CODE END  0 */
