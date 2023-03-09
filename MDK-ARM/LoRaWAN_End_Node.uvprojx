@@ -339,7 +339,7 @@
               <MiscControls>-Wno-invalid-source-encoding</MiscControls>
               <Define>CORE_CM4,USE_HAL_DRIVER,STM32WLE5xx,TX_INCLUDE_USER_DEFINE_FILE, TX_EXECUTION_PROFILE_ENABLE, TX_CORTEX_M_EPK</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../LoRaWAN/App;../LoRaWAN/Target;../Drivers/STM32WLxx_HAL_Driver/Inc;../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy;../Utilities/trace/adv_trace;../Utilities/misc;../Utilities/timer;../Utilities/lpm/tiny_lpm;../Middlewares/Third_Party/LoRaWAN/LmHandler/Packages;../Middlewares/Third_Party/SubGHz_Phy;../Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver;../Drivers/CMSIS/Device/ST/STM32WLxx/Include;../Middlewares/Third_Party/LoRaWAN/Crypto;../Middlewares/Third_Party/LoRaWAN/Mac/Region;../Middlewares/Third_Party/LoRaWAN/Mac;../Middlewares/Third_Party/LoRaWAN/LmHandler;../Middlewares/Third_Party/LoRaWAN/Utilities;../Drivers/CMSIS/Include;../BSP/STM32WLxx_LM401;../AZURE_RTOS/App;../Middlewares/ST/threadx/common/inc/;../Middlewares/ST/threadx/ports/cortex_m4/ac6/inc/;../Middlewares/ST/threadx/utility/low_power/;..\Middlewares\ST\threadx\utility\execution_profile_kit</IncludePath>
+              <IncludePath>../Core/Inc;../LoRaWAN/App;../LoRaWAN/Target;../Drivers/STM32WLxx_HAL_Driver/Inc;../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy;../Utilities/trace/adv_trace;../Utilities/misc;../Utilities/timer;../Utilities/lpm/tiny_lpm;../Middlewares/Third_Party/LoRaWAN/LmHandler/Packages;../Middlewares/Third_Party/SubGHz_Phy;../Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver;../Drivers/CMSIS/Device/ST/STM32WLxx/Include;../Middlewares/Third_Party/LoRaWAN/Crypto;../Middlewares/Third_Party/LoRaWAN/Mac/Region;../Middlewares/Third_Party/LoRaWAN/Mac;../Middlewares/Third_Party/LoRaWAN/LmHandler;../Middlewares/Third_Party/LoRaWAN/Utilities;../Drivers/CMSIS/Include;../BSP/STM32WLxx_LM401;../AZURE_RTOS/App;../Middlewares/ST/threadx/common/inc/;../Middlewares/ST/threadx/ports/cortex_m4/ac6/inc/;../Middlewares/ST/threadx/utility/low_power/;../Middlewares/ST/threadx/utility/execution_profile_kit</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1164,6 +1164,19 @@
               </FileOption>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/ThreadX/RTOS/ThreadX/execution profile</GroupName>
+          <Files>
+            <File>
+              <FileName>tx_execution_profile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\ST\threadx\utility\execution_profile_kit\tx_execution_profile.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
           <GroupName>Middlewares/ThreadX/RTOS/ThreadX/Core</GroupName>
@@ -10491,19 +10504,6 @@
               </FileOption>
             </File>
           </Files>
-        </Group>
-        <Group>
-          <GroupName>Middlewares/ThreadX/RTOS/ThreadX/execution profile</GroupName>
-          <Files>
-            <File>
-              <FileName>tx_execution_profile.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\ST\threadx\utility\execution_profile_kit\tx_execution_profile.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>

@@ -62,6 +62,37 @@
 
 `main.c` 和 `main.h` 中的 `void Error_Handler(void)` 替换为`void Error_Handler(char *file, uint32_t line)`
 
+#### 5. 添加 EXECUTION PROFILE 有关内容
+
+##### 5.1 添加汇编的宏定义
+
+```C
+TX_EXECUTION_PROFILE_ENABLE, TX_ENABLE_EXECUTION_CHANGE_NOTIFY
+```
+
+##### 5.2 `tx_api.h` 添加 EXECUTION PROFILE 有关内容
+
+```C
+#if (defined(TX_EXECUTION_PROFILE_ENABLE) && !defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY))
+#include "tx_execution_profile.h"
+#endif
+```
+
+##### 5.3 `tx_initialize_kernel_enter.c` 添加 EXECUTION PROFILE 有关内容
+
+```C
+#if defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY) || defined(TX_EXECUTION_PROFILE_ENABLE)
+extern VOID _tx_execution_initialize(VOID);
+#endif
+```
+
+```C
+#if defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY) || defined(TX_EXECUTION_PROFILE_ENABLE)
+    /* Initialize Execution Profile Kit.  */
+    _tx_execution_initialize();
+#endif
+```
+
 ### TODO:
 
 - 利用 Trace 功能，测试不同优化等级下，以及是否开启 Link-Time Optimization、One ELF Section per Function 对程序执行时间、Firm 大小的影响
