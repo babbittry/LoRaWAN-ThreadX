@@ -35,6 +35,8 @@
 #include  <stdio.h>
 #include  <stdlib.h>
 #include "tx_execution_profile.h"
+#include "mb.h"
+#include "mbport.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +67,13 @@ static  uint64_t    AppTaskStatStk[APP_CFG_TASK_STAT_STK_SIZE/8];
 #define  APP_CFG_TASK_STAT_PRIO         30u
 static  void  AppTaskStat           (ULONG thread_input);
 static  void  OSStatInit            (void);
+
+// mosbus 任务
+#define APP_CFG_TASK_MODBUS_STK_SIZE     1024u
+static TX_THREAD    AppTaskModbusTCB;
+static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
+#define APP_CFG_TASK_MODBUS_PRIO         17u
+static void AppTaskModbus(ULONG thread_input);
 
 
 static  void  App_Printf (const char *fmt, ...);
@@ -382,6 +391,26 @@ static void AppTaskPrint(ULONG thread_input)
         App_Printf("===============================================================\r\n");
 
         tx_thread_sleep(10000); /* 10s打印一次 */
+    }
+}
+
+
+/*
+*********************************************************************************************************
+*	函 数 名: AppTaskModbus
+*	功能说明: Modbus RTU 任务
+*	形    参: 无
+*	返 回 值: 无
+*********************************************************************************************************
+*/
+static void AppTaskModbus(ULONG thread_input)
+{
+    (void)thread_input;
+
+    while (1)
+    {
+        eMBPoll();              // 启动modbus侦听
+        tx_thread_sleep(10); /* 10ms 侦听一次 */
     }
 }
 

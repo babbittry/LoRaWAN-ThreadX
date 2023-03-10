@@ -10,6 +10,12 @@
         "stdbool.h": "c",
         "stdarg.h": "c",
         "app_azure_rtos.h": "c",
-        "tx_initialize.h": "c"
+        "tx_initialize.h": "c",
+        "usart.h": "c",
+        "port.h": "c",
+        "stm32wlxx_hal.h": "c",
+        "mb.h": "c",
+        "mbport.h": "c",
+        "stdint.h": "c"
     }
 }

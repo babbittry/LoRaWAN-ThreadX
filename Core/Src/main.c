@@ -30,6 +30,8 @@
 #include "sys_app.h"
 #include  <stdarg.h>
 #include  <stdio.h>
+#include "mb.h"
+#include "mbport.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,7 +97,8 @@ int main(void)
   MX_TIM16_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  eMBInit( MB_RTU, 0x01, 1, 115200, MB_PAR_NONE);     //初始化modbus，走modbusRTU，从站地址为0x01，端口为1。
+  eMBEnable(  );//使能modbus
   /* USER CODE END 2 */
 
   MX_ThreadX_Init();

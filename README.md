@@ -125,12 +125,12 @@ extern VOID _tx_execution_initialize(VOID);
 
 ### 目前使用的资源：
 
-#### 协议栈：
+#### LoRaWan 协议栈：
 
 flash：58.5kb
 ram：43.2kb
 
-#### 协议栈 + ThreadX：
+#### LoRaWan 协议栈 + ThreadX：
 
 flash：107.2kb
 ram：56.3kb
