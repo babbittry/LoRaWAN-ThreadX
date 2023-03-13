@@ -24,7 +24,7 @@
 #include "mbport.h"
 
 /* ----------------------- Defines ------------------------------------------*/
-#define REG_INPUT_START 1000        // 输入寄存器的起始地址为 1000
+#define REG_INPUT_START 1           // 输入寄存器的起始地址为 1
 #define REG_INPUT_NREGS 4           // 输入寄存器的个数为 4
 
 /* ----------------------- Static variables ---------------------------------*/

@@ -296,6 +296,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)	//定时器中断回
   /* NOTE : This function Should not be modified, when the callback is needed,
             the __HAL_TIM_PeriodElapsedCallback could be implemented in the user file
    */
-  	prvvTIMERExpiredISR( );
+	  if(htim->Instance == TIM16)
+    {
+  	  prvvTIMERExpiredISR( );
+    }
 }
 /* USER CODE END 1 */

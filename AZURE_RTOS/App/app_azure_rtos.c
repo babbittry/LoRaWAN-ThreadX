@@ -72,7 +72,7 @@ static  void  OSStatInit            (void);
 #define APP_CFG_TASK_MODBUS_STK_SIZE     1024u
 static TX_THREAD    AppTaskModbusTCB;
 static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
-#define APP_CFG_TASK_MODBUS_PRIO         17u
+#define APP_CFG_TASK_MODBUS_PRIO         4u
 static void AppTaskModbus(ULONG thread_input);
 
 
@@ -202,6 +202,17 @@ VOID tx_application_define(VOID *first_unused_memory)
                        APP_CFG_TASK_PRINT_PRIO,         /* 任务抢占阀值 */
                        TX_NO_TIME_SLICE,                /* 不开启时间片 */
                        TX_AUTO_START);                  /* 创建后立即启动 */
+    /**************创建 modbus 任务********************/
+    tx_thread_create(&AppTaskModbusTCB,                 /* 任务控制块地址 */
+                       "App Task modbus",               /* 任务名 */
+                       AppTaskModbus,                   /* 启动任务函数地址 */
+                       0,                               /* 传递给任务的参数 */
+                       &AppTaskModbusStk[0],            /* 堆栈基地址 */
+                       APP_CFG_TASK_MODBUS_STK_SIZE,    /* 堆栈空间大小 */
+                       APP_CFG_TASK_MODBUS_PRIO,        /* 任务优先级*/
+                       APP_CFG_TASK_MODBUS_PRIO,        /* 任务抢占阀值 */
+                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
+                       TX_AUTO_START);                  /* 创建后立即启动 */
     /* USER CODE END  App_ThreadX_Init_Success */
 
   }
@@ -267,7 +278,6 @@ static void AppTaskStat(ULONG thread_input)
      * deltaIdleTime： 200ms 内的空闲时间
      */
     EXECUTION_TIME TolTime, IdleTime, deltaTolTime, deltaIdleTime;
-    uint32_t uiCount = 0;
     /* 优先开启 DWT */
     bsp_InitDWT();
 
@@ -277,7 +287,6 @@ static void AppTaskStat(ULONG thread_input)
 
     for (;;)
     {
-        uiCount = 0;
         deltaIdleTime = _tx_execution_idle_time_total - IdleTime;
         deltaTolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total - TolTime;
         if(deltaTolTime != 0)

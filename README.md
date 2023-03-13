@@ -13,6 +13,7 @@
 - 硬件地址：https://oshwhub.com/dfasdf/e77-400m22s
 - 串口：921600-8-N-1
 - LED 灯： PC13（低电平点亮）
+- Modbus RTU 超时时间，1750us：48 * 1750 / 48000000 = 0.00175s = 1.75ms = 1750us.
 
 
 
@@ -134,6 +135,11 @@ ram：43.2kb
 
 flash：107.2kb
 ram：56.3kb
+
+#### FreeModbus协议栈 + LoRaWan 协议栈 + ThreadX：
+
+flash：110kb
+ram：56.67kb
 
 ####  STM32WLE5CC 资源
 48 MHz 
