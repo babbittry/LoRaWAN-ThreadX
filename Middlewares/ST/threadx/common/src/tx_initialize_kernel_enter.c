@@ -49,7 +49,7 @@ TX_SAFETY_CRITICAL_EXCEPTION_HANDLER
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _tx_initialize_kernel_enter                         PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.11       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    William E. Lamie, Microsoft Corporation                             */
@@ -87,9 +87,12 @@ TX_SAFETY_CRITICAL_EXCEPTION_HANDLER
 /*                                                                        */
 /*    DATE              NAME                      DESCRIPTION             */
 /*                                                                        */
-/*  05-19-2020     William E. Lamie         Initial Version 6.0           */
-/*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
+/*  05-19-2020      William E. Lamie        Initial Version 6.0           */
+/*  09-30-2020      Yuxin Zhou              Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  04-25-2022      Scott Larson            Modified comment(s),          */
+/*                                            added EPK initialization,   */
+/*                                            resulting in version 6.1.11 */
 /*                                                                        */
 /**************************************************************************/
 VOID  _tx_initialize_kernel_enter(VOID)

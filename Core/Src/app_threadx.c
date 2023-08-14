@@ -60,9 +60,8 @@
 UINT App_ThreadX_Init(VOID *memory_ptr)
 {
   UINT ret = TX_SUCCESS;
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
-
   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
   (void)byte_pool;
   /* USER CODE END App_ThreadX_MEM_POOL */
 
@@ -73,8 +72,8 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   return ret;
 }
 
-/**
-  * @brief  MX_ThreadX_Init
+  /**
+  * @brief  Function that implements the kernel's initialization.
   * @param  None
   * @retval None
   */
