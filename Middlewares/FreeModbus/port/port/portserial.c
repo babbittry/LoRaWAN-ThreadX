@@ -62,25 +62,23 @@ xMBPortSerialInit( uint8_t ucPORT, uint32_t ulBaudRate, uint8_t ucDataBits, eMBP
     return TRUE;
 }
 
-_Bool
-xMBPortSerialPutByte( int8_t ucByte )
+_Bool xMBPortSerialPutByte(int8_t ucByte)
 {
     /* Put a byte in the UARTs transmit buffer. This function is called
      * by the protocol stack if pxMBFrameCBTransmitterEmpty( ) has been
      * called. */
-    if(HAL_UART_Transmit (&huart2 ,(uint8_t *)&ucByte,1,0x01) != HAL_OK )	//添加发送一位代码
+    if (HAL_UART_Transmit(&huart2, (uint8_t *)&ucByte, 1, 0xFF) != HAL_OK) // 添加发送一位代码
         return FALSE;
     else
         return TRUE;
 }
 
-_Bool
-xMBPortSerialGetByte( int8_t * pucByte )
+_Bool xMBPortSerialGetByte(int8_t *pucByte)
 {
     /* Return the byte in the UARTs receive buffer. This function is called
      * by the protocol stack after pxMBFrameCBByteReceived( ) has been called.
      */
-    if(HAL_UART_Receive (&huart2 ,(uint8_t *)pucByte,1,0x01) != HAL_OK )//添加接收一位代码
+    if (HAL_UART_Receive(&huart2, (uint8_t *)pucByte, 1, 0xFF) != HAL_OK) // 添加接收一位代码
         return FALSE;
     else
         return TRUE;

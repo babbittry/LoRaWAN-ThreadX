@@ -69,8 +69,8 @@ static  uint64_t    AppTaskStatStk[APP_CFG_TASK_STAT_STK_SIZE/8];
 static  void  AppTaskStat           (ULONG thread_input);
 static  void  OSStatInit            (void);
 
-// mosbus 任务
-#define APP_CFG_TASK_MODBUS_STK_SIZE     1024u
+// modbus 任务
+#define APP_CFG_TASK_MODBUS_STK_SIZE     2048u
 static TX_THREAD    AppTaskModbusTCB;
 static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
 #define APP_CFG_TASK_MODBUS_PRIO         4u
@@ -150,8 +150,6 @@ static void AppTaskIDLE(ULONG thread_input)
 
   while(1)
   {
-       TX_DISABLE
-       TX_RESTORE
        tx_thread_sleep(2000);
   }
 }
@@ -258,7 +256,7 @@ static void AppTaskPrint(ULONG thread_input)
 
         /* 打印标题 */
         App_Printf("===============================================================\r\n");
-        App_Printf("CPU利用率 = %5.2f%%\r\n", OSCPUUsage);
+        App_Printf("CPU 利用率 = %5.2f%%\r\n", OSCPUUsage);
         App_Printf("任务执行时间 = %.9fs\r\n", (double)_tx_execution_thread_time_total/SystemCoreClock);
         App_Printf("空闲执行时间 = %.9fs\r\n", (double)_tx_execution_idle_time_total/SystemCoreClock);
         App_Printf("中断执行时间 = %.9fs\r\n", (double)_tx_execution_isr_time_total/SystemCoreClock);
@@ -309,13 +307,27 @@ static void AppTaskModbus(ULONG thread_input)
     eMBEnable(  );                                      //使能modbus
     while (1)
     {
-        TX_DISABLE
+        // TX_DISABLE
         eMBPoll();              // 启动modbus侦听
-        TX_RESTORE
-         // tx_thread_sleep(1);     /* 10ms 侦听一次 */
+        // TX_RESTORE
+        tx_thread_sleep(1);     /* 10ms 侦听一次 */
     }
 }
 
+/*
+*********************************************************************************************************
+*	函 数 名: bsp_InitDWT
+*	功能说明: 初始化 DWT
+*	形    参: 无
+*	返 回 值: 无
+*********************************************************************************************************
+*/
+void bsp_InitDWT(void)
+{
+    DEM_CR         |= (unsigned int)DEM_CR_TRCENA;
+    DWT_CYCCNT      = (unsigned int)0u;
+    DWT_CR         |= (unsigned int)DWT_CR_CYCCNTENA;
+}
 
 /* USER CODE END PFP */
 
@@ -356,45 +368,45 @@ VOID tx_application_define(VOID *first_unused_memory)
 
     /* USER CODE BEGIN  App_ThreadX_Init_Success */
 
-    /**************创建统计任务*********************/
-//    tx_thread_create(&AppTaskStatTCB,                   /* 任务控制块地址 */
-//                       "App Task STAT",                 /* 任务名 */
-//                       AppTaskStat,                     /* 启动任务函数地址 */
-//                       0,                               /* 传递给任务的参数 */
-//                       &AppTaskStatStk[0],              /* 堆栈基地址 */
-//                       APP_CFG_TASK_STAT_STK_SIZE,      /* 堆栈空间大小 */
-//                       APP_CFG_TASK_STAT_PRIO,          /* 任务优先级*/
-//                       APP_CFG_TASK_STAT_PRIO,          /* 任务抢占阀值 */
-//                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
-//                       TX_AUTO_START);                  /* 创建后立即启动 */
+  //   /**************创建统计任务*********************/
+  //  tx_thread_create(&AppTaskStatTCB,                   /* 任务控制块地址 */
+  //                     "App Task STAT",                 /* 任务名 */
+  //                     AppTaskStat,                     /* 启动任务函数地址 */
+  //                     0,                               /* 传递给任务的参数 */
+  //                     &AppTaskStatStk[0],              /* 堆栈基地址 */
+  //                     APP_CFG_TASK_STAT_STK_SIZE,      /* 堆栈空间大小 */
+  //                     APP_CFG_TASK_STAT_PRIO,          /* 任务优先级*/
+  //                     APP_CFG_TASK_STAT_PRIO,          /* 任务抢占阀值 */
+  //                     TX_NO_TIME_SLICE,                /* 不开启时间片 */
+  //                     TX_AUTO_START);                  /* 创建后立即启动 */
 
 
     /**************创建空闲任务*********************/
-//    tx_thread_create(&AppTaskIdleTCB,                   /* 任务控制块地址 */
-//                       "App Task IDLE",                 /* 任务名 */
-//                       AppTaskIDLE,                     /* 启动任务函数地址 */
-//                       0,                               /* 传递给任务的参数 */
-//                       &AppTaskIdleStk[0],              /* 堆栈基地址 */
-//                       APP_CFG_TASK_IDLE_STK_SIZE,      /* 堆栈空间大小 */
-//                       APP_CFG_TASK_IDLE_PRIO,          /* 任务优先级*/
-//                       APP_CFG_TASK_IDLE_PRIO,          /* 任务抢占阀值 */
-//                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
-//                       TX_AUTO_START);                  /* 创建后立即启动 */
+   tx_thread_create(&AppTaskIdleTCB,                   /* 任务控制块地址 */
+                      "App Task Idle",                 /* 任务名 */
+                      AppTaskIDLE,                     /* 启动任务函数地址 */
+                      0,                               /* 传递给任务的参数 */
+                      &AppTaskIdleStk[0],              /* 堆栈基地址 */
+                      APP_CFG_TASK_IDLE_STK_SIZE,      /* 堆栈空间大小 */
+                      APP_CFG_TASK_IDLE_PRIO,          /* 任务优先级*/
+                      APP_CFG_TASK_IDLE_PRIO,          /* 任务抢占阀值 */
+                      TX_NO_TIME_SLICE,                /* 不开启时间片 */
+                      TX_AUTO_START);                  /* 创建后立即启动 */
 
-//    /**************创建 print 任务*********************/
-//    tx_thread_create(&AppTaskPrintTCB,                  /* 任务控制块地址 */
-//                       "App Task print",                /* 任务名 */
-//                       AppTaskPrint,                    /* 启动任务函数地址 */
-//                       0,                               /* 传递给任务的参数 */
-//                       &AppTaskPrintStk[0],             /* 堆栈基地址 */
-//                       APP_CFG_TASK_PRINT_STK_SIZE,     /* 堆栈空间大小 */
-//                       APP_CFG_TASK_PRINT_PRIO,         /* 任务优先级*/
-//                       APP_CFG_TASK_PRINT_PRIO,         /* 任务抢占阀值 */
-//                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
-//                       TX_AUTO_START);                  /* 创建后立即启动 */
+   /**************创建 print 任务*********************/
+   tx_thread_create(&AppTaskPrintTCB,                  /* 任务控制块地址 */
+                      "App Task Print",                /* 任务名 */
+                      AppTaskPrint,                    /* 启动任务函数地址 */
+                      0,                               /* 传递给任务的参数 */
+                      &AppTaskPrintStk[0],             /* 堆栈基地址 */
+                      APP_CFG_TASK_PRINT_STK_SIZE,     /* 堆栈空间大小 */
+                      APP_CFG_TASK_PRINT_PRIO,         /* 任务优先级*/
+                      APP_CFG_TASK_PRINT_PRIO,         /* 任务抢占阀值 */
+                      TX_NO_TIME_SLICE,                /* 不开启时间片 */
+                      TX_AUTO_START);                  /* 创建后立即启动 */
     /**************创建 modbus 任务********************/
     tx_thread_create(&AppTaskModbusTCB,                 /* 任务控制块地址 */
-                       "App Task modbus",               /* 任务名 */
+                       "App Task Modbus",               /* 任务名 */
                        AppTaskModbus,                   /* 启动任务函数地址 */
                        0,                               /* 传递给任务的参数 */
                        &AppTaskModbusStk[0],            /* 堆栈基地址 */

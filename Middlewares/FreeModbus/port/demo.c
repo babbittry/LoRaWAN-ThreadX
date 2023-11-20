@@ -32,24 +32,24 @@ static uint16_t   usRegInputStart = REG_INPUT_START;
 static uint16_t   usRegInputBuf[REG_INPUT_NREGS] = {0x11, 0x22, 0x33, 0x44};
 
 /* ----------------------- Start implementation -----------------------------*/
-int
-host( void )
-{
-    eMBErrorCode    eStatus;
+// int
+// host( void )
+// {
+//     eMBErrorCode    eStatus;
 
-    eStatus = eMBInit( MB_RTU, 0x0A, 0, 38400, MB_PAR_EVEN );
+//     eStatus = eMBInit( MB_RTU, 0x0A, 0, 38400, MB_PAR_EVEN );
 
-    /* Enable the Modbus Protocol Stack. */
-    eStatus = eMBEnable(  );
+//     /* Enable the Modbus Protocol Stack. */
+//     eStatus = eMBEnable(  );
 
-    for( ;; )
-    {
-        ( void )eMBPoll(  );
+//     for( ;; )
+//     {
+//         ( void )eMBPoll(  );
 
-        /* Here we simply count the number of poll cycles. */
-        usRegInputBuf[0]++;
-    }
-}
+//         /* Here we simply count the number of poll cycles. */
+//         usRegInputBuf[0]++;
+//     }
+// }
 
 eMBErrorCode
 eMBRegInputCB( uint8_t * pucRegBuffer, uint16_t usAddress, uint16_t usNRegs )

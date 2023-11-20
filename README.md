@@ -17,6 +17,24 @@
 
 
 
+### Modbus Poll 的设置
+
+串口：115200 - 8 -N - 1
+
+Read / Write Definition: 
+
+​	Slave ID: 1
+
+​	Function: 04 Read Input Registrer(3x)
+
+​	Address: 0
+
+​    Quantity: 4
+
+
+
+
+
 ### CubeMX 生成工程后，需要修改的项
 
 #### 1. 函数 `void RegionCN470InitDefaults( InitDefaultsParams_t* params )`
