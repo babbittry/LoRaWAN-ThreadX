@@ -36,8 +36,7 @@
 #include  <stdio.h>
 #include  <stdlib.h>
 #include "tx_execution_profile.h"
-#include "mb.h"
-#include "mbport.h"
+#include "modbus_host.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -303,14 +302,14 @@ static void AppTaskModbus(ULONG thread_input)
 {
     (void)thread_input;
     TX_INTERRUPT_SAVE_AREA
-    eMBInit( MB_RTU, 0x01, 1, 115200, MB_PAR_NONE);     //初始化modbus，走modbusRTU，从站地址为0x01，端口为1。
-    eMBEnable(  );                                      //使能modbus
+                                   //使能modbus
     while (1)
     {
         // TX_DISABLE
-        eMBPoll();              // 启动modbus侦听
+        ModbusHost_ReadParam_03H(REG_P01, 2);
+        ModbusHost_Poll();              // 启动modbus侦听
         // TX_RESTORE
-        tx_thread_sleep(1);     /* 10ms 侦听一次 */
+        tx_thread_sleep(1000);     /* 1s 侦听一次 */
     }
 }
 

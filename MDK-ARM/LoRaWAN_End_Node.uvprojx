@@ -339,7 +339,7 @@
               <MiscControls>-Wno-invalid-source-encoding</MiscControls>
               <Define>CORE_CM4,USE_HAL_DRIVER,STM32WLE5xx,TX_INCLUDE_USER_DEFINE_FILE, TX_EXECUTION_PROFILE_ENABLE, TX_CORTEX_M_EPK</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../LoRaWAN/App;../LoRaWAN/Target;../Drivers/STM32WLxx_HAL_Driver/Inc;../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy;../Utilities/trace/adv_trace;../Utilities/misc;../Utilities/timer;../Utilities/lpm/tiny_lpm;../Middlewares/Third_Party/LoRaWAN/LmHandler/Packages;../Middlewares/Third_Party/SubGHz_Phy;../Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver;../Drivers/CMSIS/Device/ST/STM32WLxx/Include;../Middlewares/Third_Party/LoRaWAN/Crypto;../Middlewares/Third_Party/LoRaWAN/Mac/Region;../Middlewares/Third_Party/LoRaWAN/Mac;../Middlewares/Third_Party/LoRaWAN/LmHandler;../Middlewares/Third_Party/LoRaWAN/Utilities;../Drivers/CMSIS/Include;../BSP/STM32WLxx_LM401;../AZURE_RTOS/App;../Middlewares/ST/threadx/common/inc/;../Middlewares/ST/threadx/ports/cortex_m4/ac6/inc/;../Middlewares/ST/threadx/utility/low_power/;../Middlewares/ST/threadx/utility/execution_profile_kit;../Middlewares/FreeModbus/port/port;../Middlewares/FreeModbus/modbus/ascii;../Middlewares/FreeModbus/modbus/include;../Middlewares/FreeModbus/modbus/rtu;../Middlewares/FreeModbus/modbus/tcp</IncludePath>
+              <IncludePath>../Core/Inc;../LoRaWAN/App;../LoRaWAN/Target;../Drivers/STM32WLxx_HAL_Driver/Inc;../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy;../Utilities/trace/adv_trace;../Utilities/misc;../Utilities/timer;../Utilities/lpm/tiny_lpm;../Middlewares/Third_Party/LoRaWAN/LmHandler/Packages;../Middlewares/Third_Party/SubGHz_Phy;../Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver;../Drivers/CMSIS/Device/ST/STM32WLxx/Include;../Middlewares/Third_Party/LoRaWAN/Crypto;../Middlewares/Third_Party/LoRaWAN/Mac/Region;../Middlewares/Third_Party/LoRaWAN/Mac;../Middlewares/Third_Party/LoRaWAN/LmHandler;../Middlewares/Third_Party/LoRaWAN/Utilities;../Drivers/CMSIS/Include;../BSP/STM32WLxx_LM401;../AZURE_RTOS/App;../Middlewares/ST/threadx/common/inc/;../Middlewares/ST/threadx/ports/cortex_m4/ac6/inc/;../Middlewares/ST/threadx/utility/low_power/;../Middlewares/ST/threadx/utility/execution_profile_kit;../Middlewares/ArmflyModbus</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -387,6 +387,11 @@
               <FileName>startup_stm32wle5xx.s</FileName>
               <FileType>2</FileType>
               <FilePath>startup_stm32wle5xx.s</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_modbus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\ArmflyModbus\bsp_modbus.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1232,97 +1237,14 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Middlewares/FreeMosbus/Mosbus</GroupName>
+          <GroupName>Middlewares/ArmflyModbus</GroupName>
           <Files>
             <File>
-              <FileName>mb.c</FileName>
+              <FileName>modbus_host.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\mb.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbtcp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\tcp\mbtcp.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbcrc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\rtu\mbcrc.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbrtu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\rtu\mbrtu.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfunccoils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfunccoils.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfuncdiag.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfuncdiag.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfuncdisc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfuncdisc.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfuncholding.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfuncholding.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfuncinput.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfuncinput.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbfuncother.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbfuncother.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbutils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\functions\mbutils.c</FilePath>
-            </File>
-            <File>
-              <FileName>mbascii.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\modbus\ascii\mbascii.c</FilePath>
+              <FilePath>..\Middlewares\ArmflyModbus\modbus_host.c</FilePath>
             </File>
           </Files>
-        </Group>
-        <Group>
-          <GroupName>Middlewares/FreeMosbus/Mosbus_Port</GroupName>
-          <Files>
-            <File>
-              <FileName>demo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\port\demo.c</FilePath>
-            </File>
-            <File>
-              <FileName>portevent.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\port\port\portevent.c</FilePath>
-            </File>
-            <File>
-              <FileName>portserial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\port\port\portserial.c</FilePath>
-            </File>
-            <File>
-              <FileName>porttimer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\FreeModbus\port\port\porttimer.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
           <GroupName>Middlewares/ThreadX/RTOS/ThreadX/Core</GroupName>
@@ -10650,6 +10572,9 @@
               </FileOption>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>

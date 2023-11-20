@@ -22,8 +22,7 @@
 #include "stm32wlxx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "mb.h"
-#include "mbport.h"
+#include "modbus_host.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
