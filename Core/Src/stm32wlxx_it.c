@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "modbus_host.h"
+#include "bsp_modbus.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,9 +48,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-extern void prvvUARTTxReadyISR(void);
-extern void prvvUARTRxISR(void);
-extern void prvvTIMERExpiredISR( void );
+extern void ModbusHost_RxTimeOut(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -239,27 +238,26 @@ void USART1_IRQHandler(void)
 /**
   * @brief This function handles USART2 Interrupt.
   */
-void USART2_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART2_IRQn 0 */
+// void USART2_IRQHandler(void)
+// {
+//   /* USER CODE BEGIN USART2_IRQn 0 */
 
-  /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
-  /* USER CODE BEGIN USART2_IRQn 1 */
-  if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
-  {
-    prvvUARTRxISR();//接收中断
-  }
+//   /* USER CODE END USART2_IRQn 0 */
+//   HAL_UART_IRQHandler(&huart2);
+//   /* USER CODE BEGIN USART2_IRQn 1 */
+//   // if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
+//   // {
+//   //   prvvUARTRxISR();//接收中断
+//   // }
 
-  if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
-  {
-    prvvUARTTxReadyISR();//发送中断
-  }
+//   // if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
+//   // {
+//   //   prvvUARTTxReadyISR();//发送中断
+//   // }
 
-  HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-  HAL_UART_IRQHandler(&huart2);
-  /* USER CODE END USART2_IRQn 1 */
-}
+//   // HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
+//   /* USER CODE END USART2_IRQn 1 */
+// }
 
 /**
   * @brief This function handles RTC Alarms (A and B) Interrupt.
@@ -290,14 +288,14 @@ void SUBGHZ_Radio_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)	//定时器中断回调函数，用于连接porttimer.c文件的函数
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)	//定时器中断回调函数，用于连接 ModbusHost_RxTimeOut 函数
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
             the __HAL_TIM_PeriodElapsedCallback could be implemented in the user file
    */
 	  if(htim->Instance == TIM16)
     {
-  	  prvvTIMERExpiredISR( );
+  	  ModbusHost_RxTimeOut( );
     }
 }
 /* USER CODE END 1 */

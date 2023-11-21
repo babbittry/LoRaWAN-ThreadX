@@ -57,6 +57,8 @@ extern "C" {
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 void bsp_InitDWT(void);
+void  App_Printf(const char *fmt, ...);
+
 /* USER CODE END PD */
 
 #ifdef __cplusplus

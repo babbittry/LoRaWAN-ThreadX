@@ -388,11 +388,6 @@
               <FileType>2</FileType>
               <FilePath>startup_stm32wle5xx.s</FilePath>
             </File>
-            <File>
-              <FileName>bsp_modbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\ArmflyModbus\bsp_modbus.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1243,6 +1238,16 @@
               <FileName>modbus_host.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\ArmflyModbus\modbus_host.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_modbus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\ArmflyModbus\bsp_modbus.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_uart_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\ArmflyModbus\bsp_uart_fifo.c</FilePath>
             </File>
           </Files>
         </Group>

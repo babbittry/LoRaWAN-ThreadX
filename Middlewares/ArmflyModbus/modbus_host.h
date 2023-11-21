@@ -13,8 +13,10 @@
 #ifndef __MOSBUS_HOST_H
 #define __MOSBUS_HOST_H
 
+#include "bsp_modbus.h"
+
 #define SlaveAddr		0x01			/* 面板作为时，主板作从机 */
-#define HBAUD485		UART3_BAUD
+#define HBAUD485		UART2_BAUD
 
 /* 01H 读强制单线圈 */
 /* 05H 写强制单线圈 */
@@ -109,6 +111,7 @@ uint8_t ModbusHost_ReadParam_04H(uint16_t _reg, uint16_t _num);
 uint8_t ModbusHost_WriteParam_05H(uint16_t _reg, uint16_t _value);
 uint8_t ModbusHost_WriteParam_06H(uint16_t _reg, uint16_t _value);
 uint8_t ModbusHost_WriteParam_10H(uint16_t _reg, uint8_t _num, uint8_t *_buf);
+void ModbusHost_RxTimeOut(void);
 
 extern ModbusHost_T g_tModbusHost;
 

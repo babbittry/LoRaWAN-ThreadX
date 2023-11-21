@@ -60,23 +60,15 @@ static uint64_t     AppTaskPrintStk[APP_CFG_TASK_PRINT_STK_SIZE / 8];
 #define APP_CFG_TASK_PRINT_PRIO         17u
 static void AppTaskPrint(ULONG thread_input);
 
-// 统计任务
-#define  APP_CFG_TASK_STAT_STK_SIZE     512u
-static  TX_THREAD   AppTaskStatTCB;
-static  uint64_t    AppTaskStatStk[APP_CFG_TASK_STAT_STK_SIZE/8];
-#define  APP_CFG_TASK_STAT_PRIO         30u
-static  void  AppTaskStat           (ULONG thread_input);
-static  void  OSStatInit            (void);
-
 // modbus 任务
-#define APP_CFG_TASK_MODBUS_STK_SIZE     2048u
+#define APP_CFG_TASK_MODBUS_STK_SIZE     1024u
 static TX_THREAD    AppTaskModbusTCB;
 static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
-#define APP_CFG_TASK_MODBUS_PRIO         4u
+#define APP_CFG_TASK_MODBUS_PRIO         14u
 static void AppTaskModbus(ULONG thread_input);
 
 
-static  void  App_Printf (const char *fmt, ...);
+void  App_Printf (const char *fmt, ...);
 /*
 *******************************************************************************************************
 *                               变量
@@ -93,7 +85,6 @@ static  TX_MUTEX   AppPrintfSemp;	/* 用于printf互斥 */
 #define  DEM_CR_TRCENA               (1 << 24)
 #define  DWT_CR_CYCCNTENA            (1 <<  0)
 
-__IO double     OSCPUUsage;       /* CPU百分比 */
 extern EXECUTION_TIME     _tx_execution_thread_time_total;
 extern EXECUTION_TIME     _tx_execution_isr_time_total;
 extern EXECUTION_TIME     _tx_execution_idle_time_total;
@@ -153,43 +144,6 @@ static void AppTaskIDLE(ULONG thread_input)
   }
 }
 
-
-static void AppTaskStat(ULONG thread_input)
-{
-    (void)thread_input;
-    /*
-     * TolTime: 总的时间
-     * IdleTime： 总的空闲时间
-     * deltaTolTime：200ms 内的总时间
-     * deltaIdleTime： 200ms 内的空闲时间
-     */
-    EXECUTION_TIME TolTime, IdleTime, deltaTolTime, deltaIdleTime;
-    /* 优先开启 DWT */
-    bsp_InitDWT();
-
-    /* 计算CPU利用率 */
-    IdleTime = _tx_execution_idle_time_total;
-    TolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total;
-
-    for (;;)
-    {
-        deltaIdleTime = _tx_execution_idle_time_total - IdleTime;
-        deltaTolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total - TolTime;
-        if(deltaTolTime != 0)
-        {
-            OSCPUUsage = (double)deltaIdleTime / deltaTolTime;
-            OSCPUUsage = 100- OSCPUUsage * 100;
-        }else
-        {
-            OSCPUUsage = 100;
-        }
-
-        IdleTime = _tx_execution_idle_time_total;
-        TolTime = _tx_execution_thread_time_total + _tx_execution_isr_time_total + _tx_execution_idle_time_total;
-        tx_thread_sleep(2000);        /* 每 2s 统计一次 */
-    }
-}
-
 /*
 *********************************************************************************************************
 *	函 数 名: AppObjCreate
@@ -213,7 +167,7 @@ static  void  AppObjCreate (void)
 *	返 回 值: 无
 *********************************************************************************************************
 */
-static  void  App_Printf(const char *fmt, ...)
+void  App_Printf(const char *fmt, ...)
 {
     char  buf_str[200 + 1]; /* 特别注意，如果printf的变量较多，注意此局部变量的大小是否够用 */
     va_list   v_args;
@@ -247,11 +201,13 @@ static void AppTaskPrint(ULONG thread_input)
     TX_INTERRUPT_SAVE_AREA
 
     (void)thread_input;
+    __IO double     OSCPUUsage = 0;       /* CPU百分比 */
 
     TX_THREAD *p_tcb; /* 定义一个任务控制块指针 */
     while (1)
     {
         p_tcb = &AppTaskPrintTCB;
+        OSCPUUsage = 100 * (_tx_execution_thread_time_total + _tx_execution_isr_time_total) / (_tx_execution_thread_time_total + _tx_execution_idle_time_total + _tx_execution_isr_time_total);
 
         /* 打印标题 */
         App_Printf("===============================================================\r\n");
@@ -301,12 +257,19 @@ static void AppTaskPrint(ULONG thread_input)
 static void AppTaskModbus(ULONG thread_input)
 {
     (void)thread_input;
-    TX_INTERRUPT_SAVE_AREA
-                                   //使能modbus
+    // TX_INTERRUPT_SAVE_AREA
+    bsp_InitUart();                               //使能modbus
+    uint16_t buf[4];
+
+    buf[0] = 0x0001;
+    buf[1] = 0x0002;
+    buf[2] = 0x0003;
+    buf[3] = 0x0004;
     while (1)
     {
         // TX_DISABLE
-        ModbusHost_ReadParam_03H(REG_P01, 2);
+        // ModbusHost_ReadParam_03H(REG_P01, 2);
+        ModbusHost_WriteParam_10H(REG_P01, 4, (uint8_t *)buf);
         ModbusHost_Poll();              // 启动modbus侦听
         // TX_RESTORE
         tx_thread_sleep(1000);     /* 1s 侦听一次 */
@@ -366,19 +329,6 @@ VOID tx_application_define(VOID *first_unused_memory)
     }
 
     /* USER CODE BEGIN  App_ThreadX_Init_Success */
-
-  //   /**************创建统计任务*********************/
-  //  tx_thread_create(&AppTaskStatTCB,                   /* 任务控制块地址 */
-  //                     "App Task STAT",                 /* 任务名 */
-  //                     AppTaskStat,                     /* 启动任务函数地址 */
-  //                     0,                               /* 传递给任务的参数 */
-  //                     &AppTaskStatStk[0],              /* 堆栈基地址 */
-  //                     APP_CFG_TASK_STAT_STK_SIZE,      /* 堆栈空间大小 */
-  //                     APP_CFG_TASK_STAT_PRIO,          /* 任务优先级*/
-  //                     APP_CFG_TASK_STAT_PRIO,          /* 任务抢占阀值 */
-  //                     TX_NO_TIME_SLICE,                /* 不开启时间片 */
-  //                     TX_AUTO_START);                  /* 创建后立即启动 */
-
 
     /**************创建空闲任务*********************/
    tx_thread_create(&AppTaskIdleTCB,                   /* 任务控制块地址 */

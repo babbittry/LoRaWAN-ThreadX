@@ -15,24 +15,17 @@
 - LED 灯： PC13（低电平点亮）
 - Modbus RTU 超时时间，1750us：48 * 1750 / 48000000 = 0.00175s = 1.75ms = 1750us.
 
+### 从机软件
 
-
-### Modbus Poll 的设置
+下载地址：[MODBUS虚拟设备2015_09_10（V1.1）.rar（来源：安富莱电子）(https://img.anfulai.cn/bbs/16989/MODBUS%E8%99%9A%E6%8B%9F%E8%AE%BE%E5%A4%872015_09_10%EF%BC%88V1.1%EF%BC%89.rar)
 
 串口：115200 - 8 -N - 1
 
-Read / Write Definition: 
+### 备忘
 
-​	Slave ID: 1
+串口一的初始化和中断处理是 STM32 CubeMX 生成的代码进行处理的。
 
-​	Function: 04 Read Input Registrer(3x)
-
-​	Address: 0
-
-​    Quantity: 4
-
-
-
+串口二的初始化和中断处理是安富莱Modbus主机协议栈处理的。
 
 
 ### CubeMX 生成工程后，需要修改的项
@@ -154,10 +147,10 @@ ram：43.2kb
 flash：107.2kb
 ram：56.3kb
 
-#### FreeModbus协议栈 + LoRaWan 协议栈 + ThreadX：
+#### 安富莱Modbus主机协议栈 + LoRaWan 协议栈 + ThreadX：
 
-flash：110kb
-ram：56.67kb
+flash：113.19kb
+ram：58.0kb
 
 ####  STM32WLE5CC 资源
 48 MHz 

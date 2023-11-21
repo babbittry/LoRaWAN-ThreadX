@@ -94,8 +94,9 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM16_Init();
-  MX_USART2_UART_Init();
+  // MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  bsp_InitDWT();
   /* USER CODE END 2 */
 
   MX_ThreadX_Init();

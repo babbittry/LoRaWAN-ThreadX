@@ -10,9 +10,8 @@
 *
 *********************************************************************************************************
 */
-#include "bsp_modbus.h"
-#include "modbus_host.h"
 
+#include "modbus_host.h"
 
 /*
 *********************************************************************************************************
@@ -58,7 +57,7 @@ VAR_T g_tVar;
 *	                                   函数声明
 *********************************************************************************************************
 */
-static void ModbusHost_RxTimeOut(void);
+void ModbusHost_RxTimeOut(void);
 static void ModbusHost_AnalyzeApp(void);
 
 static void ModbusHost_Read_01H(void);
@@ -364,8 +363,8 @@ void ModbusHost_ReciveNew(uint8_t _data)
 	}
 
 	/* 硬件定时中断，硬件定时器1用于MODBUS从机, 定时器2用于MODBUS主机*/
-	bsp_StartHardTimer(2,  ModbusBaudRate[i].usTimeOut, (void *)ModbusHost_RxTimeOut);
-
+	// bsp_StartHardTimer(2,  ModbusBaudRate[i].usTimeOut, (void *)ModbusHost_RxTimeOut);
+	vMBPortTimersEnable();
 	if (g_tModbusHost.RxCount < HOST_RX_BUF_SIZE)
 	{
 		g_tModbusHost.RxBuf[g_tModbusHost.RxCount++] = _data;
@@ -380,9 +379,10 @@ void ModbusHost_ReciveNew(uint8_t _data)
 *	返 回 值: 无
 *********************************************************************************************************
 */
-static void ModbusHost_RxTimeOut(void)
+void ModbusHost_RxTimeOut(void)
 {
 	g_modh_timeout = 1;
+	vMBPortTimersDisable();
 }
 
 /*
@@ -656,10 +656,11 @@ uint8_t ModbusHost_ReadParam_01H(uint16_t _reg, uint16_t _num)
 		
 		while (1)				/* 等待应答,超时或接收到应答则break  */
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;		/* 通信超时了 */
 			}
 			
@@ -677,11 +678,11 @@ uint8_t ModbusHost_ReadParam_01H(uint16_t _reg, uint16_t _num)
 	
 	if (g_tModbusHost.fAck01H == 0)
 	{
-		return 0;
+		return false;
 	}
 	else 
 	{
-		return 1;	/* 01H 读成功 */
+		return true;	/* 01H 读成功 */
 	}
 }
 
@@ -705,10 +706,11 @@ uint8_t ModbusHost_ReadParam_02H(uint16_t _reg, uint16_t _num)
 		
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;		/* 通信超时了 */
 			}
 			
@@ -726,11 +728,11 @@ uint8_t ModbusHost_ReadParam_02H(uint16_t _reg, uint16_t _num)
 	
 	if (g_tModbusHost.fAck02H == 0)
 	{
-		return 0;
+		return false;
 	}
 	else 
 	{
-		return 1;	/* 02H 读成功 */
+		return true;	/* 02H 读成功 */
 	}
 }
 /*
@@ -753,10 +755,11 @@ uint8_t ModbusHost_ReadParam_03H(uint16_t _reg, uint16_t _num)
 		
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;		/* 通信超时了 */
 			}
 			
@@ -774,11 +777,11 @@ uint8_t ModbusHost_ReadParam_03H(uint16_t _reg, uint16_t _num)
 	
 	if (g_tModbusHost.fAck03H == 0)
 	{
-		return 0;	/* 通信超时了 */
+		return false;	/* 通信超时了 */
 	}
 	else 
 	{
-		return 1;	/* 写入03H参数成功 */
+		return true;	/* 写入03H参数成功 */
 	}
 }
 
@@ -803,10 +806,11 @@ uint8_t ModbusHost_ReadParam_04H(uint16_t _reg, uint16_t _num)
 		
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;		/* 通信超时了 */
 			}
 			
@@ -824,11 +828,11 @@ uint8_t ModbusHost_ReadParam_04H(uint16_t _reg, uint16_t _num)
 	
 	if (g_tModbusHost.fAck04H == 0)
 	{
-		return 0;	/* 通信超时了 */
+		return false;	/* 通信超时了 */
 	}
 	else 
 	{
-		return 1;	/* 04H 读成功 */
+		return true;	/* 04H 读成功 */
 	}
 }
 /*
@@ -851,11 +855,12 @@ uint8_t ModbusHost_WriteParam_05H(uint16_t _reg, uint16_t _value)
 		
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 			
 			/* 超时大于 TIMEOUT，则认为异常 */
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;	/* 通信超时了 */
 			}
 			
@@ -873,11 +878,12 @@ uint8_t ModbusHost_WriteParam_05H(uint16_t _reg, uint16_t _value)
 	
 	if (g_tModbusHost.fAck05H == 0)
 	{
-		return 0;	/* 通信超时了 */
+		App_Printf("通信超时了\r\n");
+		return false;	/* 通信超时了 */
 	}
 	else
 	{
-		return 1;	/* 05H 写成功 */
+		return true;	/* 05H 写成功 */
 	}
 }
 
@@ -901,10 +907,11 @@ uint8_t ModbusHost_WriteParam_06H(uint16_t _reg, uint16_t _value)
 				
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 		
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;
 			}
 			
@@ -922,11 +929,12 @@ uint8_t ModbusHost_WriteParam_06H(uint16_t _reg, uint16_t _value)
 	
 	if (g_tModbusHost.fAck06H == 0)
 	{
-		return 0;	/* 通信超时了 */
+		App_Printf("通信超时了\r\n");
+		return false;	/* 通信超时了 */
 	}
 	else
 	{
-		return 1;	/* 写入06H参数成功 */
+		return true;	/* 写入06H参数成功 */
 	}
 }
 
@@ -950,10 +958,11 @@ uint8_t ModbusHost_WriteParam_10H(uint16_t _reg, uint8_t _num, uint8_t *_buf)
 				
 		while (1)
 		{
-			bsp_Idle();
+			ModbusHost_Poll();
 		
 			if (bsp_CheckRunTime(time1) > TIMEOUT)		
 			{
+				App_Printf("通信超时了\r\n");
 				break;
 			}
 			
@@ -971,11 +980,12 @@ uint8_t ModbusHost_WriteParam_10H(uint16_t _reg, uint8_t _num, uint8_t *_buf)
 	
 	if (g_tModbusHost.fAck10H == 0)
 	{
-		return 0;	/* 通信超时了 */
+		App_Printf("通信超时了\r\n");
+		return false;	/* 通信超时了 */
 	}
 	else
 	{
-		return 1;	/* 写入10H参数成功 */
+		return true;	/* 写入10H参数成功 */
 	}
 }
 
