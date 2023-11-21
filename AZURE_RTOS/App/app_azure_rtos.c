@@ -259,17 +259,17 @@ static void AppTaskModbus(ULONG thread_input)
     (void)thread_input;
     // TX_INTERRUPT_SAVE_AREA
     bsp_InitUart();                               //使能modbus
-    uint16_t buf[4];
+    uint8_t buf[4];
 
-    buf[0] = 0x0001;
-    buf[1] = 0x0002;
-    buf[2] = 0x0003;
-    buf[3] = 0x0004;
+    buf[0] = 0x01;
+    buf[1] = 0x02;
+    buf[2] = 0x03;
+    buf[3] = 0x04;
     while (1)
     {
         // TX_DISABLE
         // ModbusHost_ReadParam_03H(REG_P01, 2);
-        ModbusHost_WriteParam_10H(REG_P01, 4, (uint8_t *)buf);
+        ModbusHost_WriteParam_10H(REG_P01, 2, buf);
         ModbusHost_Poll();              // 启动modbus侦听
         // TX_RESTORE
         tx_thread_sleep(1000);     /* 1s 侦听一次 */

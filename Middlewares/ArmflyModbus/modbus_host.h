@@ -104,13 +104,13 @@ typedef struct
 }VAR_T;
 
 void ModbusHost_Poll(void);
-uint8_t ModbusHost_ReadParam_01H(uint16_t _reg, uint16_t _num);
-uint8_t ModbusHost_ReadParam_02H(uint16_t _reg, uint16_t _num);
-uint8_t ModbusHost_ReadParam_03H(uint16_t _reg, uint16_t _num);
-uint8_t ModbusHost_ReadParam_04H(uint16_t _reg, uint16_t _num);
-uint8_t ModbusHost_WriteParam_05H(uint16_t _reg, uint16_t _value);
-uint8_t ModbusHost_WriteParam_06H(uint16_t _reg, uint16_t _value);
-uint8_t ModbusHost_WriteParam_10H(uint16_t _reg, uint8_t _num, uint8_t *_buf);
+bool ModbusHost_ReadParam_01H(uint16_t _reg, uint16_t _num);
+bool ModbusHost_ReadParam_02H(uint16_t _reg, uint16_t _num);
+bool ModbusHost_ReadParam_03H(uint16_t _reg, uint16_t _num);
+bool ModbusHost_ReadParam_04H(uint16_t _reg, uint16_t _num);
+bool ModbusHost_WriteParam_05H(uint16_t _reg, uint16_t _value);
+bool ModbusHost_WriteParam_06H(uint16_t _reg, uint16_t _value);
+bool ModbusHost_WriteParam_10H(uint16_t _reg, uint8_t _num, uint8_t *_buf);
 void ModbusHost_RxTimeOut(void);
 
 extern ModbusHost_T g_tModbusHost;
