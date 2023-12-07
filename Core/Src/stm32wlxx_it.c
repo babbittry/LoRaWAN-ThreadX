@@ -62,7 +62,6 @@ extern SUBGHZ_HandleTypeDef hsubghz;
 extern TIM_HandleTypeDef htim16;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -234,30 +233,6 @@ void USART1_IRQHandler(void)
 
   /* USER CODE END USART1_IRQn 1 */
 }
-
-/**
-  * @brief This function handles USART2 Interrupt.
-  */
-// void USART2_IRQHandler(void)
-// {
-//   /* USER CODE BEGIN USART2_IRQn 0 */
-
-//   /* USER CODE END USART2_IRQn 0 */
-//   HAL_UART_IRQHandler(&huart2);
-//   /* USER CODE BEGIN USART2_IRQn 1 */
-//   // if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE)!= RESET) 
-//   // {
-//   //   prvvUARTRxISR();//接收中断
-//   // }
-
-//   // if(__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE)!= RESET) 
-//   // {
-//   //   prvvUARTTxReadyISR();//发送中断
-//   // }
-
-//   // HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-//   /* USER CODE END USART2_IRQn 1 */
-// }
 
 /**
   * @brief This function handles RTC Alarms (A and B) Interrupt.

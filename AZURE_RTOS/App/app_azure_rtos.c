@@ -354,16 +354,16 @@ VOID tx_application_define(VOID *first_unused_memory)
                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
                       TX_AUTO_START);                  /* 创建后立即启动 */
     /**************创建 modbus 任务********************/
-    tx_thread_create(&AppTaskModbusTCB,                 /* 任务控制块地址 */
-                       "App Task Modbus",               /* 任务名 */
-                       AppTaskModbus,                   /* 启动任务函数地址 */
-                       0,                               /* 传递给任务的参数 */
-                       &AppTaskModbusStk[0],            /* 堆栈基地址 */
-                       APP_CFG_TASK_MODBUS_STK_SIZE,    /* 堆栈空间大小 */
-                       APP_CFG_TASK_MODBUS_PRIO,        /* 任务优先级*/
-                       APP_CFG_TASK_MODBUS_PRIO,        /* 任务抢占阀值 */
-                       TX_NO_TIME_SLICE,                /* 不开启时间片 */
-                       TX_AUTO_START);                  /* 创建后立即启动 */
+    tx_thread_create(&AppTaskModbusTCB,                /* 任务控制块地址 */
+                       "App Task Modbus",              /* 任务名 */
+                       AppTaskModbus,                  /* 启动任务函数地址 */
+                       0,                              /* 传递给任务的参数 */
+                       &AppTaskModbusStk[0],           /* 堆栈基地址 */
+                       APP_CFG_TASK_MODBUS_STK_SIZE,   /* 堆栈空间大小 */
+                       APP_CFG_TASK_MODBUS_PRIO,       /* 任务优先级*/
+                       APP_CFG_TASK_MODBUS_PRIO,       /* 任务抢占阀值 */
+                       TX_NO_TIME_SLICE,               /* 不开启时间片 */
+                       TX_AUTO_START);                 /* 创建后立即启动 */
     /* USER CODE END  App_ThreadX_Init_Success */
 
   }

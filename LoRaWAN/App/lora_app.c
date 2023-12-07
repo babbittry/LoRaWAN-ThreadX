@@ -623,76 +623,106 @@ static void OnRxData(LmHandlerAppData_t *appData, LmHandlerRxParams_t *params)
 
   if (params != NULL)
   {
-    //HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET); /* LED_BLUE */
+      // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET); /* LED_BLUE */
 
-    // UTIL_TIMER_Start(&RxLedTimer);
-    APP_LOG(TS_OFF, VLEVEL_H, "!!!Receive OnRxData!!!\r\n");
+      // UTIL_TIMER_Start(&RxLedTimer);
+      APP_LOG(TS_OFF, VLEVEL_H, "!!!Receive OnRxData!!!\r\n");
 
-    if (params->IsMcpsIndication)
-    {
-      if (appData != NULL)
+      if (params->IsMcpsIndication)
       {
-        RxPort = appData->Port;
-        APP_LOG(TS_OFF, VLEVEL_H, "Receive data from GW: port: %d, payload:%02x\r\n", RxPort, appData->Buffer[0]);
-        if (appData->Buffer != NULL)
-        {
-          switch (appData->Port)
+          if (appData != NULL)
           {
-            case LORAWAN_SWITCH_CLASS_PORT:
-              /*this port switches the class*/
-              if (appData->BufferSize == 1)
+              RxPort = appData->Port;
+              if (appData->Buffer != NULL)
               {
-                switch (appData->Buffer[0])
-                {
-                  case 0:
-                  {
-                    LmHandlerRequestClass(CLASS_A);
-                    break;
-                  }
-                  case 1:
-                  {
-                    LmHandlerRequestClass(CLASS_B);
-                    break;
-                  }
-                  case 2:
-                  {
-                    LmHandlerRequestClass(CLASS_C);
-                    break;
-                  }
-                  default:
-                    break;
-                }
-              }
-              break;
-            case LORAWAN_USER_APP_PORT:
-              if (appData->BufferSize == 1)
-              {
-                AppLedStateOn = appData->Buffer[0] & 0x01;
-                if (AppLedStateOn == RESET)
-                {
-                  APP_LOG(TS_OFF, VLEVEL_H, "LED OFF\r\n");
-                  HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_SET); /* LED_RED */
-                }
-                else
-                {
-                  APP_LOG(TS_OFF, VLEVEL_H, "LED ON\r\n");
-                  HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_RESET); /* LED_RED */
-                }
-              }
-              break;
+                    APP_LOG(TS_OFF, VLEVEL_H, "Receive data from GW: port: %d, size: %d, payload: ", RxPort, appData->BufferSize, appData->Buffer[0]);
+                    for(int i = 0; i < appData->BufferSize; i++)
+                    {
+                        APP_LOG(TS_OFF, VLEVEL_H, "0x%02x ", appData->Buffer[i]);
+                    }
+                    APP_LOG(TS_OFF, VLEVEL_H, "\r\n");
+                    switch (RxPort)
+                    {
+                    case LORAWAN_SWITCH_CLASS_PORT:
+                        /*this port switches the class*/
+                        if (appData->BufferSize == 1)
+                      {
+                          switch (appData->Buffer[0])
+                          {
+                          case 0:
+                          {
+                              LmHandlerRequestClass(CLASS_A);
+                              break;
+                          }
+                          case 1:
+                          {
+                              LmHandlerRequestClass(CLASS_B);
+                              break;
+                          }
+                          case 2:
+                          {
+                              LmHandlerRequestClass(CLASS_C);
+                              break;
+                          }
+                          default:
+                              break;
+                          }
+                      }
+                        break;
+                    case LORAWAN_USER_APP_PORT:
+                        if (appData->BufferSize == 2)
+                        {
+                            switch (appData->Buffer[0])
+                            {
+                            case DATA_TYPE_LED:
+                                AppLedStateOn = appData->Buffer[1] & 0x01;
+                                if (AppLedStateOn == RESET)
+                                {
+                                    APP_LOG(TS_OFF, VLEVEL_H, "LED OFF\r\n");
+                                    HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_SET); /* LED_RED */
+                                }
+                                else
+                                {
+                                    APP_LOG(TS_OFF, VLEVEL_H, "LED ON\r\n");
+                                    HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_RESET); /* LED_RED */
+                                }
+                                break;
+                            case DATA_TYPE_RELAY:
+                                AppLedStateOn = appData->Buffer[1] & 0x01;
+                                if (AppLedStateOn == RESET)
+                                {
+                                    APP_LOG(TS_OFF, VLEVEL_H, "RELAY OFF\r\n");
+                                    HAL_GPIO_WritePin(DI_OUT_GPIO_Port, DI_OUT_Pin, GPIO_PIN_SET);
+                                }
+                                else
+                                {
+                                    APP_LOG(TS_OFF, VLEVEL_H, "RELAY ON\r\n");
+                                    HAL_GPIO_WritePin(DI_OUT_GPIO_Port, DI_OUT_Pin, GPIO_PIN_RESET);
+                                }
+                                break;
 
-            default:
-              APP_LOG(TS_OFF, VLEVEL_H, "FPort %d is not define\r\n", RxPort);
-              break;
+                            default:
+                                APP_LOG(TS_OFF, VLEVEL_H, "!!!Unknown data type!!!\r\n");
+                                break;
+                            }
+                        }
+                        else
+                        {
+                              APP_LOG(TS_OFF, VLEVEL_H, "!!!Unknown data type!!!\r\n");
+                        }
+                        break;
+                    default:
+                        APP_LOG(TS_OFF, VLEVEL_H, "FPort %d is not define\r\n", RxPort);
+                        break;
+                    }
+              }
           }
-        }
       }
-    }
-    if (params->RxSlot < RX_SLOT_NONE)
-    {
-      APP_LOG(TS_OFF, VLEVEL_H, "###### D/L FRAME:%04d | PORT:%d | DR:%d | RX window:%s | RSSI:%d | SNR:%d\r\n",
-              params->DownlinkCounter, RxPort, params->Datarate, slotStrings[params->RxSlot], params->Rssi, params->Snr);
-    }
+      if (params->RxSlot < RX_SLOT_NONE)
+      {
+          APP_LOG(TS_OFF, VLEVEL_H, "###### D/L FRAME:%04d | PORT:%d | DR:%d | RX window:%s | RSSI:%d | SNR:%d\r\n",
+                  params->DownlinkCounter, RxPort, params->Datarate, slotStrings[params->RxSlot], params->Rssi, params->Snr);
+      }
   }
   /* USER CODE END OnRxData_1 */
 }

@@ -54,53 +54,53 @@
 
 typedef struct
 {
-	uint8_t RxBuf[HOST_RX_BUF_SIZE];
-	uint8_t RxCount;
-	uint8_t RxStatus;
-	uint8_t RxNewFlag;
+    uint8_t RxBuf[HOST_RX_BUF_SIZE];
+    uint8_t RxCount;
+    uint8_t RxStatus;
+    uint8_t RxNewFlag;
 
-	uint8_t RspCode;
+    uint8_t RspCode;
 
-	uint8_t TxBuf[HOST_TX_BUF_SIZE];
-	uint8_t TxCount;
-	
-	uint16_t Reg01H;		/* 保存主机发送的寄存器首地址 */
-	uint16_t Reg02H;
-	uint16_t Reg03H;		
-	uint16_t Reg04H;
+    uint8_t TxBuf[HOST_TX_BUF_SIZE];
+    uint8_t TxCount;
+    
+    uint16_t Reg01H;		/* 保存主机发送的寄存器首地址 */
+    uint16_t Reg02H;
+    uint16_t Reg03H;		
+    uint16_t Reg04H;
 
-	uint8_t RegNum;			/* 寄存器个数 */
+    uint8_t RegNum;			/* 寄存器个数 */
 
-	uint8_t fAck01H;		/* 应答命令标志 0 表示执行失败 1表示执行成功 */
-	uint8_t fAck02H;
-	uint8_t fAck03H;
-	uint8_t fAck04H;
-	uint8_t fAck05H;		
-	uint8_t fAck06H;		
-	uint8_t fAck10H;
-	
+    uint8_t fAck01H;		/* 应答命令标志 0 表示执行失败 1表示执行成功 */
+    uint8_t fAck02H;
+    uint8_t fAck03H;
+    uint8_t fAck04H;
+    uint8_t fAck05H;		
+    uint8_t fAck06H;		
+    uint8_t fAck10H;
+    
 }ModbusHost_T;
 
 typedef struct
 {
-	/* 03H 06H 读写保持寄存器 */
-	uint16_t P01;
-	uint16_t P02;
-	
-	/* 02H 读写离散输入寄存器 */
-	uint16_t T01;
-	uint16_t T02;
-	uint16_t T03;
-	
-	/* 04H 读取模拟量寄存器 */
-	uint16_t A01;
-	
-	/* 01H 05H 读写单个强制线圈 */
-	uint16_t D01;
-	uint16_t D02;
-	uint16_t D03;
-	uint16_t D04;
-	
+    /* 03H 06H 读写保持寄存器 */
+    uint16_t P01;
+    uint16_t P02;
+    
+    /* 02H 读写离散输入寄存器 */
+    uint16_t T01;
+    uint16_t T02;
+    uint16_t T03;
+    
+    /* 04H 读取模拟量寄存器 */
+    uint16_t A01;
+    
+    /* 01H 05H 读写单个强制线圈 */
+    uint16_t D01;
+    uint16_t D02;
+    uint16_t D03;
+    uint16_t D04;
+    
 }VAR_T;
 
 void ModbusHost_Poll(void);

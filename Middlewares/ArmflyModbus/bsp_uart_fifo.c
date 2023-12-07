@@ -296,6 +296,8 @@ void comSetBaud(COM_PORT_E _ucPort, uint32_t _BaudRate)
 
 /* 如果是RS485通信，请按如下格式编写函数， 我们仅举了 USART3作为RS485的例子 */
 
+
+/* 已经由 CubeMX 生成的代码初始化了。 */
 /*
 *********************************************************************************************************
 *	函 数 名: RS485_InitTXE
@@ -344,7 +346,7 @@ void RS485_SetBaud(uint32_t _baud)
 */
 void RS485_SendBefor(void)
 {
-	// RS485_TX_EN();	/* 切换RS485收发芯片为发送模式 */
+	RS485_TX_EN();	/* 切换RS485收发芯片为发送模式 */
 }
 
 /*
@@ -358,7 +360,7 @@ void RS485_SendBefor(void)
 */
 void RS485_SendOver(void)
 {
-	// RS485_RX_EN();	/* 切换RS485收发芯片为接收模式 */
+	RS485_RX_EN();	/* 切换RS485收发芯片为接收模式 */
 }
 
 /*

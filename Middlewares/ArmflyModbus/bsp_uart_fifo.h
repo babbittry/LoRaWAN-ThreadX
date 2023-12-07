@@ -31,8 +31,8 @@
 
 /* PB2 控制RS485芯片的发送使能 */
 #define RS485_TXEN_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()
-#define RS485_TXEN_GPIO_PORT              GPIOB
-#define RS485_TXEN_PIN                    GPIO_PIN_2
+#define RS485_TXEN_GPIO_PORT              RS485_CON_GPIO_Port
+#define RS485_TXEN_PIN                    RS485_CON_Pin
 
 //#define RS485_RX_EN()	RS485_TXEN_GPIO_PORT->BSRRH = RS485_TXEN_PIN
 //#define RS485_TX_EN()	RS485_TXEN_GPIO_PORT->BSRRL = RS485_TXEN_PIN

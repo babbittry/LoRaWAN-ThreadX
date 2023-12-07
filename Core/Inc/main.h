@@ -63,6 +63,12 @@ void Error_Handler(char *file, uint32_t line);
 #define BUT1_Pin GPIO_PIN_0
 #define BUT1_GPIO_Port GPIOA
 #define BUT1_EXTI_IRQn EXTI0_IRQn
+#define RS485_CON_Pin GPIO_PIN_1
+#define RS485_CON_GPIO_Port GPIOA
+#define DI_IN_Pin GPIO_PIN_4
+#define DI_IN_GPIO_Port GPIOA
+#define DI_OUT_Pin GPIO_PIN_5
+#define DI_OUT_GPIO_Port GPIOA
 #define USER_LED_Pin GPIO_PIN_13
 #define USER_LED_GPIO_Port GPIOC
 

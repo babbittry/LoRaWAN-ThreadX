@@ -157,6 +157,15 @@ extern "C" {
 /* Exported macros -----------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
+/*!
+ * LoRaWAN data type code enumeration
+ */
+typedef enum
+{
+    DATA_TYPE_LED   = 0X01,
+    DATA_TYPE_RELAY = 0X02,
+}LoRaWanDataTypeCode_t;
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
