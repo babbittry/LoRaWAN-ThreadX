@@ -162,8 +162,8 @@ extern "C" {
  */
 typedef enum
 {
-    DATA_TYPE_LED   = 0X01,
-    DATA_TYPE_RELAY = 0X02,
+    DATA_TYPE_LED   = 0x01,
+    DATA_TYPE_RELAY = 0x02,
 }LoRaWanDataTypeCode_t;
 
 /* USER CODE END EM */
