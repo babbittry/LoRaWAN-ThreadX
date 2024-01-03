@@ -35,15 +35,21 @@
 
 第二位是开关，00 代表关，01 代表开。
 
-### Downlink 数据包
+通过 MQTT 的 downlink 包格式为：
+
+```
+{"confirmed": true,"fport": 85,"data": "CQEA/w=="}
+```
+
+### Downlink 数据包 payload
 
 开继电器：hex：`0201`，Base64：`AgE=`
 
 关继电器：hex：`0200`，Base64：`AgA=`
 
-开继电器：hex：`0101`，Base64：`AQE=`
+开 LED 灯：hex：`0101`，Base64：`AQE=`
 
-开继电器：hex：`0100`，Base64：`AQA=`
+关 LED 灯：hex：`0100`，Base64：`AQA=`
 
 ### CubeMX 生成工程后，需要修改的项
 
