@@ -10,12 +10,12 @@
 *
 *********************************************************************************************************
 */
-#ifndef __MOSBUS_HOST_H
-#define __MOSBUS_HOST_H
+#ifndef __MODBUS_HOST_H
+#define __MODBUS_HOST_H
 
 #include "bsp_modbus.h"
 
-#define SlaveAddr		0x01			/* 面板作为时，主板作从机 */
+#define SlaveAddr		0x02			/* 面板作为时，主板作从机 */
 #define HBAUD485		UART2_BAUD
 
 /* 01H 读强制单线圈 */
@@ -102,6 +102,7 @@ typedef struct
     uint16_t D04;
     
 }VAR_T;
+
 
 void ModbusHost_Poll(void);
 bool ModbusHost_ReadParam_01H(uint16_t _reg, uint16_t _num);

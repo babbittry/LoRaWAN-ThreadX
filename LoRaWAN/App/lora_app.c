@@ -349,6 +349,7 @@ static LmHandlerAppData_t AppData = { 0, 0, AppDataBuffer };
   * @brief Specifies the state of the application LED
   */
 static uint8_t AppLedStateOn = RESET;
+static uint8_t AppRelayStateOn = RESET;
 
 /**
   * @brief Timer to handle the application Tx Led to toggle
@@ -688,8 +689,8 @@ static void OnRxData(LmHandlerAppData_t *appData, LmHandlerRxParams_t *params)
                                 }
                                 break;
                             case DATA_TYPE_RELAY:
-                                AppLedStateOn = appData->Buffer[1] & 0x01;
-                                if (AppLedStateOn == RESET)
+                                AppRelayStateOn = appData->Buffer[1] & 0x01;
+                                if (AppRelayStateOn == RESET)
                                 {
                                     APP_LOG(TS_OFF, VLEVEL_H, "RELAY OFF\r\n");
                                     HAL_GPIO_WritePin(DI_OUT_GPIO_Port, DI_OUT_Pin, GPIO_PIN_SET);
@@ -731,7 +732,7 @@ static void SendTxData(void)
 {
   /* USER CODE BEGIN SendTxData_1 */
   LmHandlerErrorStatus_t status = LORAMAC_HANDLER_ERROR;
-  uint8_t batteryLevel = GetBatteryLevel();
+  uint8_t batteryLevel = (uint8_t)(GetBatteryLevel() / 2.54);   /* max battery: 254, 转换为百分比 */
   sensor_t sensor_data;
   UTIL_TIMER_Time_t nextTxIn = 0;
 
@@ -774,12 +775,12 @@ static void SendTxData(void)
   temperature = (int16_t)(sensor_data.temperature);
   pressure = (uint16_t)(sensor_data.pressure * 100 / 10); /* in hPa / 10 */
   AppData.Buffer[i++] = 0x63;
-  AppData.Buffer[i++] = AppLedStateOn;
-  AppData.Buffer[i++] = (uint8_t)((pressure >> 8) & 0xFF);
-  AppData.Buffer[i++] = (uint8_t)(pressure & 0xFF);
+  AppData.Buffer[i++] = AppRelayStateOn;
+  // AppData.Buffer[i++] = (uint8_t)((pressure >> 8) & 0xFF);
+  // AppData.Buffer[i++] = (uint8_t)(pressure & 0xFF);
   AppData.Buffer[i++] = (uint8_t)(temperature & 0xFF);
-  AppData.Buffer[i++] = (uint8_t)((humidity >> 8) & 0xFF);
-  AppData.Buffer[i++] = (uint8_t)(humidity & 0xFF);
+  // AppData.Buffer[i++] = (uint8_t)((humidity >> 8) & 0xFF);
+  // AppData.Buffer[i++] = (uint8_t)(humidity & 0xFF);
 
   if ((LmHandlerParams.ActiveRegion == LORAMAC_REGION_US915) || (LmHandlerParams.ActiveRegion == LORAMAC_REGION_AU915)
       || (LmHandlerParams.ActiveRegion == LORAMAC_REGION_AS923))
@@ -796,15 +797,15 @@ static void SendTxData(void)
     //APP_LOG(TS_ON, VLEVEL_M, "latitude: %d\r\n", latitude);
     //APP_LOG(TS_ON, VLEVEL_M, "longitude: %d\r\n", longitude);    
 
-    AppData.Buffer[i++] = GetBatteryLevel();        /* 1 (very low) to 254 (fully charged) */
-    AppData.Buffer[i++] = (uint8_t)((latitude >> 16) & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)((latitude >> 8) & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)(latitude & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)((longitude >> 16) & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)((longitude >> 8) & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)(longitude & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)((altitudeGps >> 8) & 0xFF);
-    AppData.Buffer[i++] = (uint8_t)(altitudeGps & 0xFF);
+    AppData.Buffer[i++] = batteryLevel;        /* 1 (very low) to 254 (fully charged) */
+    // AppData.Buffer[i++] = (uint8_t)((latitude >> 16) & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)((latitude >> 8) & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)(latitude & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)((longitude >> 16) & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)((longitude >> 8) & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)(longitude & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)((altitudeGps >> 8) & 0xFF);
+    // AppData.Buffer[i++] = (uint8_t)(altitudeGps & 0xFF);
   }
 
   AppData.BufferSize = i;
@@ -838,6 +839,37 @@ static void SendTxData(void)
   }
 
   /* USER CODE END SendTxData_1 */
+}
+
+void SendModbusData(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit)
+{
+  LmHandlerErrorStatus_t status = LORAMAC_HANDLER_ERROR;
+  UTIL_TIMER_Time_t nextTxIn = 0;
+
+  uint8_t i = 0;   /* AppData.BufferSize */
+
+  AppData.Port = LORAWAN_USER_APP_PORT;
+
+  AppData.Buffer[i++] = 0x65;
+  AppData.Buffer[i++] = (uint8_t)((high16bit >> 8) & 0xFF);
+  AppData.Buffer[i++] = (uint8_t)(high16bit & 0xFF);
+  AppData.Buffer[i++] = (uint8_t)((low16bit >> 8) & 0xFF);
+  AppData.Buffer[i++] = (uint8_t)(low16bit & 0xFF);
+  AppData.BufferSize = i;
+
+  status = LmHandlerSend(&AppData, LmHandlerParams.IsTxConfirmed, false);
+  if (LORAMAC_HANDLER_SUCCESS == status)
+  {
+    APP_LOG(TS_ON, VLEVEL_L, "SEND REQUEST\r\n");
+  }
+  else if (LORAMAC_HANDLER_DUTYCYCLE_RESTRICTED == status)
+  {
+    nextTxIn = LmHandlerGetDutyCycleWaitTime();
+    if (nextTxIn > 0)
+    {
+      APP_LOG(TS_ON, VLEVEL_L, "Next Tx in  : ~%d second(s)\r\n", (nextTxIn / 1000));
+    }
+  }
 }
 
 static void OnTxTimerEvent(void *context)

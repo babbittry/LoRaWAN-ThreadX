@@ -84,10 +84,16 @@ uint32_t MX_LoRaWAN_Init(void *memory_ptr)
   /* Create App_MainThread.  */
   if (ret == TX_SUCCESS)
   {
-    if (tx_thread_create(&App_MainThread, "App LoRaWAN Main Thread", App_Main_Thread_Entry, 0,
-                         pointer, CFG_APP_LORA_THREAD_STACK_SIZE,
-                         CFG_APP_LORA_THREAD_PRIO, CFG_APP_LORA_THREAD_PREEMPTION_THRESHOLD,
-                         TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
+    if (tx_thread_create(&App_MainThread,                   /* 任务控制块地址 */
+                          "App LoRaWAN Main Thread",        /* 任务名 */
+                          App_Main_Thread_Entry,            /* 启动任务函数地址 */
+                          0,                                /* 传递给任务的参数 */
+                          pointer,                          /* 堆栈基地址 */
+                          CFG_APP_LORA_THREAD_STACK_SIZE,   /* 堆栈空间大小 */
+                          CFG_APP_LORA_THREAD_PRIO,         /* 任务优先级*/
+                          CFG_APP_LORA_THREAD_PREEMPTION_THRESHOLD, /* 任务抢占阀值 */
+                          TX_NO_TIME_SLICE,                 /* 不开启时间片 */
+                          TX_AUTO_START) != TX_SUCCESS)     /* 创建后立即启动 */
     {
       ret = TX_THREAD_ERROR;
     }

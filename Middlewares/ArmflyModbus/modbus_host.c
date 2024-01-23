@@ -50,7 +50,7 @@ const ModbusBps_T ModbusBaudRate[] =
 
 ModbusHost_T g_tModbusHost = {0};
 uint8_t g_modh_timeout = 0;
-VAR_T g_tVar;
+VAR_T g_tVar = {0};
 
 /*
 *********************************************************************************************************
@@ -218,10 +218,10 @@ void ModbusHost_Send03H(uint8_t _addr, uint16_t _reg, uint16_t _num)
     g_tModbusHost.TxBuf[g_tModbusHost.TxCount++] = _num >> 8;	/* 寄存器个数 高字节 */
     g_tModbusHost.TxBuf[g_tModbusHost.TxCount++] = _num;		/* 寄存器个数 低字节 */
     
-    ModbusHost_SendAckWithCRC();		/* 发送数据，自动加CRC */
-    g_tModbusHost.fAck03H = 0;		/* 清接收标志 */
-    g_tModbusHost.RegNum = _num;		/* 寄存器个数 */
-    g_tModbusHost.Reg03H = _reg;		/* 保存03H指令中的寄存器地址，方便对应答数据进行分类 */	
+    ModbusHost_SendAckWithCRC();        /* 发送数据，自动加CRC */
+    g_tModbusHost.fAck03H = 0;          /* 清接收标志 */
+    g_tModbusHost.RegNum = _num;        /* 寄存器个数 */
+    g_tModbusHost.Reg03H = _reg;        /* 保存03H指令中的寄存器地址，方便对应答数据进行分类 */	
 }
 
 /*
@@ -245,7 +245,7 @@ void ModbusHost_Send04H(uint8_t _addr, uint16_t _reg, uint16_t _num)
     g_tModbusHost.TxBuf[g_tModbusHost.TxCount++] = _num;		/* 寄存器个数 低字节 */
     
     ModbusHost_SendAckWithCRC();		/* 发送数据，自动加CRC */
-    g_tModbusHost.fAck04H = 0;		/* 清接收标志 */
+    g_tModbusHost.fAck04H = 0;          /* 清接收标志 */
     g_tModbusHost.RegNum = _num;		/* 寄存器个数 */
     g_tModbusHost.Reg04H = _reg;		/* 保存04H指令中的寄存器地址，方便对应答数据进行分类 */	
 }
@@ -592,7 +592,7 @@ void ModbusHost_Read_03H(void)
         bytes = g_tModbusHost.RxBuf[2];	/* 数据长度 字节数 */				
         switch (g_tModbusHost.Reg03H)
         {
-            case REG_P01:
+            case 2002:
                 if (bytes == 4)
                 {
                     p = &g_tModbusHost.RxBuf[3];	
@@ -603,6 +603,8 @@ void ModbusHost_Read_03H(void)
                     g_tModbusHost.fAck03H = 1;
                 }
                 break;
+            default:
+                App_Printf("地址不对\r\n");
         }
     }
 }

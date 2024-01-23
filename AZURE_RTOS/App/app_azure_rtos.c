@@ -37,6 +37,7 @@
 #include  <stdlib.h>
 #include "tx_execution_profile.h"
 #include "modbus_host.h"
+#include "lora_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,6 +67,7 @@ static TX_THREAD    AppTaskModbusTCB;
 static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
 #define APP_CFG_TASK_MODBUS_PRIO         14u
 static void AppTaskModbus(ULONG thread_input);
+extern VAR_T g_tVar;
 
 
 void  App_Printf (const char *fmt, ...);
@@ -265,14 +267,23 @@ static void AppTaskModbus(ULONG thread_input)
     buf[1] = 0x02;
     buf[2] = 0x03;
     buf[3] = 0x04;
+    tx_thread_sleep(30 * 1000);     /* 开机 30s 后再读取 */
     while (1)
     {
         // TX_DISABLE
-        // ModbusHost_ReadParam_03H(REG_P01, 2);
-        ModbusHost_WriteParam_10H(REG_P01, 2, buf);
+        ModbusHost_ReadParam_03H(2002, 2);
+        // ModbusHost_WriteParam_10H(REG_P01, 2, buf);
         ModbusHost_Poll();              // 启动modbus侦听
+        if(g_tModbusHost.fAck03H == 1)
+        {
+            App_Printf("=================receive data via modbus==================\r\n");
+            App_Printf("当前温度： %d\r\n", (g_tVar.P01 / 10));
+            App_Printf("设定温度： %d\r\n", (g_tVar.P02 / 10));
+            SendModbusData(2, g_tVar.P01, g_tVar.P02);
+            g_tModbusHost.fAck03H = 0;
+        }
         // TX_RESTORE
-        tx_thread_sleep(1000);     /* 1s 侦听一次 */
+        tx_thread_sleep(20000);     /* 20s 侦听一次 */
     }
 }
 
