@@ -750,8 +750,8 @@ static void SendTxData(void)
 
   EnvSensors_Read(&sensor_data);
 
-  APP_LOG(TS_OFF, VLEVEL_M, "VDDA: %d\r\n", batteryLevel);
-  APP_LOG(TS_OFF, VLEVEL_M, "temp: %d\r\n", (int16_t)(sensor_data.temperature));
+  APP_LOG(TS_OFF, VLEVEL_M, "Battery Level: %d%%\r\n", batteryLevel);
+  APP_LOG(TS_OFF, VLEVEL_M, "Temperature: %d\r\n", (int16_t)(sensor_data.temperature));
 
   AppData.Port = LORAWAN_USER_APP_PORT;
 
@@ -841,7 +841,7 @@ static void SendTxData(void)
   /* USER CODE END SendTxData_1 */
 }
 
-void SendModbusData(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit)
+void SendModbusDataViaLora(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit)
 {
   LmHandlerErrorStatus_t status = LORAMAC_HANDLER_ERROR;
   UTIL_TIMER_Time_t nextTxIn = 0;
@@ -851,6 +851,7 @@ void SendModbusData(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit)
   AppData.Port = LORAWAN_USER_APP_PORT;
 
   AppData.Buffer[i++] = 0x65;
+  AppData.Buffer[i++] = deviceID;
   AppData.Buffer[i++] = (uint8_t)((high16bit >> 8) & 0xFF);
   AppData.Buffer[i++] = (uint8_t)(high16bit & 0xFF);
   AppData.Buffer[i++] = (uint8_t)((low16bit >> 8) & 0xFF);

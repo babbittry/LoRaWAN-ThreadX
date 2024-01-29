@@ -181,7 +181,7 @@ void LoRaWAN_Init(void);
   */
 void App_Main_Thread_Entry(unsigned long thread_input);
 /* USER CODE BEGIN EFP */
-void SendModbusData(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit);
+void SendModbusDataViaLora(uint8_t deviceID, uint16_t high16bit, uint16_t low16bit);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

@@ -62,7 +62,7 @@ static uint64_t     AppTaskPrintStk[APP_CFG_TASK_PRINT_STK_SIZE / 8];
 static void AppTaskPrint(ULONG thread_input);
 
 // modbus 任务
-#define APP_CFG_TASK_MODBUS_STK_SIZE     1024u
+#define APP_CFG_TASK_MODBUS_STK_SIZE     1536u
 static TX_THREAD    AppTaskModbusTCB;
 static uint64_t     AppTaskModbusStk[APP_CFG_TASK_MODBUS_STK_SIZE / 8];
 #define APP_CFG_TASK_MODBUS_PRIO         14u
@@ -206,6 +206,7 @@ static void AppTaskPrint(ULONG thread_input)
     __IO double     OSCPUUsage = 0;       /* CPU百分比 */
 
     TX_THREAD *p_tcb; /* 定义一个任务控制块指针 */
+    tx_thread_sleep(10000); /* 10s 后再打印 */
     while (1)
     {
         p_tcb = &AppTaskPrintTCB;
@@ -243,7 +244,7 @@ static void AppTaskPrint(ULONG thread_input)
         }
         App_Printf("===============================================================\r\n");
 
-        tx_thread_sleep(10000); /* 10s打印一次 */
+        tx_thread_sleep(60000); /* 1min 打印一次 */
     }
 }
 
@@ -276,11 +277,14 @@ static void AppTaskModbus(ULONG thread_input)
         ModbusHost_Poll();              // 启动modbus侦听
         if(g_tModbusHost.fAck03H == 1)
         {
-            App_Printf("=================receive data via modbus==================\r\n");
-            App_Printf("当前温度： %d\r\n", (g_tVar.P01 / 10));
-            App_Printf("设定温度： %d\r\n", (g_tVar.P02 / 10));
-            SendModbusData(2, g_tVar.P01, g_tVar.P02);
+            App_Printf("当前温度： %.1f\r\n", (float)(g_tVar.P01 / 10.0));
+            App_Printf("设定温度： %.1f\r\n", (float)(g_tVar.P02 / 10.0));
+            SendModbusDataViaLora(2, g_tVar.P01, g_tVar.P02);
             g_tModbusHost.fAck03H = 0;
+        }
+        else
+        {
+            SendModbusDataViaLora(0xFF, 0xFFFF, 0xFFFF);
         }
         // TX_RESTORE
         tx_thread_sleep(20000);     /* 20s 侦听一次 */
